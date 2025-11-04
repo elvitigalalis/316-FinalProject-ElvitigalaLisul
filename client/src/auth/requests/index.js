@@ -8,13 +8,38 @@
     based API which helps a lot with asynchronous communication.
     
     @author McKilla Gorilla
+    @author elvitigalalis
 */
 
-import axios from 'axios'
-axios.defaults.withCredentials = true;
-const api = axios.create({
-    baseURL: 'http://localhost:4000/auth',
-})
+const baseURL = "http://localhost:4000/auth";
+
+async function request(path, method = "GET", body = null) {
+  const url = baseURL + path;
+  try {
+    const options = {
+      method,
+      credentials: "include",
+      header: { "Content-Type": "application/json" },
+    };
+    if (body) {
+      options.body = JSON.stringify(body);
+    }
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      return new Error(
+        method +
+          " request for " +
+          path +
+          " failed with status " +
+          response.status
+      );
+    }
+    const data = await response.json();
+    return data;
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
 
 // THESE ARE ALL THE REQUESTS WE`LL BE MAKING, ALL REQUESTS HAVE A
 // REQUEST METHOD (like get) AND PATH (like /register). SOME ALSO
@@ -23,28 +48,34 @@ const api = axios.create({
 // WE NEED TO PUT THINGS INTO THE DATABASE OR IF WE HAVE SOME
 // CUSTOM FILTERS FOR QUERIES
 
-export const getLoggedIn = () => api.get(`/loggedIn/`);
+export const getLoggedIn = () => request("/loggedIn", "GET");
 export const loginUser = (email, password) => {
-    return api.post(`/login/`, {
-        email : email,
-        password : password
-    })
-}
-export const logoutUser = () => api.get(`/logout/`)
-export const registerUser = (firstName, lastName, email, password, passwordVerify) => {
-    return api.post(`/register/`, {
-        firstName : firstName,
-        lastName : lastName,
-        email : email,
-        password : password,
-        passwordVerify : passwordVerify
-    })
-}
+  return request("/login", "POST", {
+    email: email,
+    password: password,
+  });
+};
+export const logoutUser = () => request("/logout", "GET");
+export const registerUser = (
+  firstName,
+  lastName,
+  email,
+  password,
+  passwordVerify
+) => {
+  return request("/register", "POST", {
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    password: password,
+    passwordVerify: passwordVerify,
+  });
+};
 const apis = {
-    getLoggedIn,
-    registerUser,
-    loginUser,
-    logoutUser
-}
+  getLoggedIn,
+  registerUser,
+  loginUser,
+  logoutUser,
+};
 
-export default apis
+export default apis;

@@ -8,13 +8,37 @@
     based API which helps a lot with asynchronous communication.
     
     @author McKilla Gorilla
+    @author elvitigalalis
 */
 
-import axios from 'axios'
-axios.defaults.withCredentials = true;
-const api = axios.create({
-    baseURL: 'http://localhost:4000/store',
-})
+const baseURL = "http://localhost:4000/store";
+async function request(path, method = "GET", body = null) {
+  const url = baseURL + "/" + path;
+  try {
+    const options = {
+      method,
+      credentials: "include",
+      header: { "Content-Type": "application/json" },
+    };
+    if (body) {
+      options.body = JSON.stringify(body);
+    }
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      return new Error(
+        method +
+          " request for " +
+          path +
+          " failed with status " +
+          response.status
+      );
+    }
+    const data = await response.json();
+    return data;
+  } catch (e) {
+    return { success: false, error: e.message };
+  }
+}
 
 // THESE ARE ALL THE REQUESTS WE`LL BE MAKING, ALL REQUESTS HAVE A
 // REQUEST METHOD (like get) AND PATH (like /top5list). SOME ALSO
@@ -23,29 +47,29 @@ const api = axios.create({
 // WE NEED TO PUT THINGS INTO THE DATABASE OR IF WE HAVE SOME
 // CUSTOM FILTERS FOR QUERIES
 export const createPlaylist = (newListName, newSongs, userEmail) => {
-    return api.post(`/playlist/`, {
-        // SPECIFY THE PAYLOAD
-        name: newListName,
-        songs: newSongs,
-        ownerEmail: userEmail
-    })
-}
-export const deletePlaylistById = (id) => api.delete(`/playlist/${id}`)
-export const getPlaylistById = (id) => api.get(`/playlist/${id}`)
-export const getPlaylistPairs = () => api.get(`/playlistpairs/`)
+  return request(`/playlist/`, "POST", {
+    // SPECIFY THE PAYLOAD
+    name: newListName,
+    songs: newSongs,
+    ownerEmail: userEmail,
+  });
+};
+export const deletePlaylistById = (id) => request(`/playlist/${id}`, "DELETE");
+export const getPlaylistById = (id) => request(`/playlist/${id}`, "GET");
+export const getPlaylistPairs = () => request(`/playlistpairs/`, "GET");
 export const updatePlaylistById = (id, playlist) => {
-    return api.put(`/playlist/${id}`, {
-        // SPECIFY THE PAYLOAD
-        playlist : playlist
-    })
-}
+  return request(`/playlist/${id}`, "PUT", {
+    // SPECIFY THE PAYLOAD
+    playlist: playlist,
+  });
+};
 
 const apis = {
-    createPlaylist,
-    deletePlaylistById,
-    getPlaylistById,
-    getPlaylistPairs,
-    updatePlaylistById
-}
+  createPlaylist,
+  deletePlaylistById,
+  getPlaylistById,
+  getPlaylistPairs,
+  updatePlaylistById,
+};
 
-export default apis
+export default apis;
