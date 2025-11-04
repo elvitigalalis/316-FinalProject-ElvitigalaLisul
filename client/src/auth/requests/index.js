@@ -19,7 +19,7 @@ async function request(path, method = "GET", body = null) {
     const options = {
       method,
       credentials: "include",
-      header: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },
     };
     if (body) {
       options.body = JSON.stringify(body);

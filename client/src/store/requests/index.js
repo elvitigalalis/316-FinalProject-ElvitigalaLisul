@@ -12,13 +12,14 @@
 */
 
 const baseURL = "http://localhost:4000/store";
+
 async function request(path, method = "GET", body = null) {
-  const url = baseURL + "/" + path;
+  const url = baseURL + path;
   try {
     const options = {
       method,
       credentials: "include",
-      header: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },
     };
     if (body) {
       options.body = JSON.stringify(body);
