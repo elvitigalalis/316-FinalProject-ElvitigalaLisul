@@ -142,7 +142,7 @@ getPlaylistPairs = async (req, res) => {
 
     const playlists = await db.getPlaylistByOwnerEmail(user.email);
     console.log("found Playlists: " + JSON.stringify(playlists));
-    if (!playlists || playlists.length === 0) {
+    if (!playlists) {
       console.log("!playlists.length");
       return res
         .status(404)
