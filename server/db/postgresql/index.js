@@ -18,7 +18,7 @@ class PostgreDatabaseManager {
     async connect() {
         try {
             await this.sequelize.authenticate();
-            console.log("Connected to PostgreSQL");
+            console.log("Connected to PostgreSQL database");
         } catch (e) {
             console.error ("Connection error (PostgreSQL)", e.message);
         }
