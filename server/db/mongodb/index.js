@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config({ path: __dirname + "/../../../.env" });
+const { DatabaseManager } = require("../index");
 
 const Playlist = require("../../models/playlist-model");
 const User = require("../../models/user-model");
 
-class MongoDatabaseManager {
+class MongoDatabaseManager extends DatabaseManager {
   async connect() {
     try {
       await mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true });

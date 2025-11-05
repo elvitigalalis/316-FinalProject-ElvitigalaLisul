@@ -40,8 +40,9 @@ class DatabaseManager {
   }
 }
 
-let DatabaseSelector;
+module.exports = { DatabaseManager };
 
+let DatabaseSelector;
 const dbType = (process.env.DB_TYPE || "mongodb").toLowerCase();
 if (dbType === "mongodb") {
   const MongoDatabaseManager = require("./mongodb");
@@ -54,5 +55,4 @@ if (dbType === "mongodb") {
 }
 
 DatabaseSelector.connect();
-
 module.exports = DatabaseSelector;

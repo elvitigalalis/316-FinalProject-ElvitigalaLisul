@@ -126,6 +126,7 @@ getPlaylistById = async (req, res) => {
   }
 };
 getPlaylistPairs = async (req, res) => {
+//   console.log("getPlaylistPairs endpoint HIT");
   if (auth.verifyUser(req) === null) {
     return res.status(400).json({
       errorMessage: "UNAUTHORIZED",
