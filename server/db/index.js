@@ -13,4 +13,4 @@ if (process.env.DB_TYPE === "mongodb") {
 
 DatabaseManager.connect();
 
-module.exports = DatabaseManager;
+module.exports = DatabaseManager.getConnection();
