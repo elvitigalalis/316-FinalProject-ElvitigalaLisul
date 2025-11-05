@@ -1,15 +1,16 @@
+require(dotenv).config({ path: __dirname + '/../../.env' });
+let DatabaseManager;
 
-const mongoose = require('mongoose')
-const dotenv = require('dotenv')
-dotenv.config();
+if (process.env.DB_TYPE === "mongodb") {
+    const MongoDatabaseManager = require("./mongodb");
+    DatabaseManager = new MongoDatabaseManager();
+} else if (process.env.DB_TYPE === "postgresql") {
+    const PostgreDatabaseManager = require ("./postgresql");
+    DatabaseManager = new PostgreDatabaseManager();
+} else {
+    throw new Error("Unsupported DB_TYPE in .env file: " + process.env.DB_TYPE);
+}
 
-mongoose
-    .connect(process.env.DB_CONNECT, { useNewUrlParser: true })
-    .catch(e => {
-        console.error('Connection error', e.message)
-    })
+DatabaseManager.connect();
 
-const db = mongoose.connection
-
-module.exports = db
-
+module.exports = DatabaseManager;
