@@ -6,10 +6,11 @@ import {
   expect,
   test,
 } from "vitest";
+let db;
 import dotenv from "dotenv";
 dotenv.config({ path: __dirname + "/../.env" });
 
-import db from "../db/index.js";
+console.log("Loaded DB_TYPE before import:", process.env.DB_TYPE);
 
 let createdUser;
 let createdPlaylist;
@@ -37,6 +38,7 @@ beforeAll(async () => {
   //     .catch(e => {
   //         console.error('Connection error', e.message)
   //     })
+  db = (await import("../db/index.js")).default;
   if (db.connect) await db.connect();
 });
 
@@ -63,7 +65,7 @@ test("Test #1) Reading a User from the Database", async () => {
   const expectedUser = {
     firstName: "Vitest",
     lastName: "Tester",
-    email: "vitest@example.com",
+    email: `vitest_${Date.now()}@example.com`,
     passwordHash: "hash1234",
   };
 
