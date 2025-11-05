@@ -1,5 +1,5 @@
 require("dotenv").config({ path: __dirname + "/../../../.env" });
-const { Sequelize, DataTypes } = require("sequelize");
+const { Sequelize, DataTypes, Model } = require("sequelize");
 
 async function resetPostgre() {
   const testData = require("../example-db-data.json");
@@ -16,7 +16,7 @@ async function resetPostgre() {
     }
   );
 
-  class User extends Sequelize.Model {}
+  class User extends Model {}
   User.init(
     {
       firstName: { type: DataTypes.STRING, allowNull: false },
@@ -27,7 +27,7 @@ async function resetPostgre() {
     { sequelize, modelName: "User" }
   );
 
-  class Playlist extends Sequelize.Model {}
+  class Playlist extends Model {}
   Playlist.init(
     {
       name: { type: DataTypes.STRING, allowNull: false },

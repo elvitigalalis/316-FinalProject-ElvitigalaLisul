@@ -2,9 +2,11 @@ const { Sequelize, DataTypes, Model } = require("sequelize");
 const dotenv = require("dotenv");
 const DatabaseManager = require("../DatabaseManager");
 dotenv.config({ path: __dirname + "/../../../.env" });
+const crypto = require("crypto");
 
 class PostgreDatabaseManager extends DatabaseManager {
   constructor() {
+    super();
     this.sequelize = new Sequelize(
       process.env.PG_DB_NAME,
       process.env.PG_USER,
@@ -37,6 +39,11 @@ class PostgreDatabaseManager extends DatabaseManager {
     class User extends Model {}
     User.init(
       {
+        id: {
+          type: DataTypes.STRING,
+          defaultValue: () => crypto.randomUUID(),
+          primaryKey: true,
+        },
         firstName: { type: DataTypes.STRING, allowNull: false },
         lastName: { type: DataTypes.STRING, allowNull: false },
         email: { type: DataTypes.STRING, allowNull: false, unique: true },
@@ -48,6 +55,11 @@ class PostgreDatabaseManager extends DatabaseManager {
     class Playlist extends Model {}
     Playlist.init(
       {
+        id: {
+          type: DataTypes.STRING,
+          defaultValue: () => crypto.randomUUID(),
+          primaryKey: true,
+        },
         name: { type: DataTypes.STRING, allowNull: false },
         ownerEmail: { type: DataTypes.STRING, allowNull: false },
         songs: { type: DataTypes.JSONB, allowNull: false },
