@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes, Model } = require("sequelize");
-const { deletePlaylist } = require("../../controllers/store-controller");
+dotenv.config({ path: __dirname + "/../../../.env" });
 
 class PostgreDatabaseManager {
   constructor() {
@@ -20,6 +20,8 @@ class PostgreDatabaseManager {
     try {
       await this.sequelize.authenticate();
       console.log("Connected to PostgreSQL database");
+      this.defineModels();
+      await this.sequelize.sync();
     } catch (e) {
       console.error("Connection error (PostgreSQL)", e.message);
     }
@@ -30,7 +32,7 @@ class PostgreDatabaseManager {
   }
 
   defineModels() {
-    class User extends Sequelize.Model {}
+    class User extends Model {}
     User.init(
       {
         firstName: { type: DataTypes.STRING, allowNull: false },
@@ -41,7 +43,7 @@ class PostgreDatabaseManager {
       { sequelize: this.sequelize, modelName: "User" }
     );
 
-    class Playlist extends Sequelize.Model {}
+    class Playlist extends Model {}
     Playlist.init(
       {
         name: { type: DataTypes.STRING, allowNull: false },
@@ -57,6 +59,9 @@ class PostgreDatabaseManager {
       onDelete: "CASCADE",
     });
     Playlist.belongsTo(User, { foreignKey: "ownerEmail", targetKey: "email" });
+
+    this.User = User;
+    this.Playlist = Playlist;
   }
 
   async createUser(data) {

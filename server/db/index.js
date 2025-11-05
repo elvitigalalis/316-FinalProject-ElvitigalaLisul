@@ -55,4 +55,4 @@ if (dbType === "mongodb") {
 
 DatabaseSelector.connect();
 
-module.exports = DatabaseSelector.getConnection();
+module.exports = DatabaseSelector;

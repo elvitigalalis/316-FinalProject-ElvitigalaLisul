@@ -59,7 +59,7 @@ class MongoDatabaseManager {
       const user = await User.findOne({ email: playlist.ownerEmail }).exec();
       if (user) {
         user.playlists = user.playlists.filter(
-          (pID) => pID.toString !== id.toString()
+          (pID) => pID.toString() !== id.toString()
         );
         await user.save();
       }
