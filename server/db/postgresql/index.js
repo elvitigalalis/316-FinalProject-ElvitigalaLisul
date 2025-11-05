@@ -24,7 +24,7 @@ class PostgreDatabaseManager extends DatabaseManager {
       await this.sequelize.authenticate();
       console.log("Connected to PostgreSQL database");
       this.defineModels();
-      await this.sequelize.sync();
+      await this.sequelize.sync({ alter: true });
     } catch (e) {
       console.error("Connection error (PostgreSQL)", e.message);
     }
@@ -86,11 +86,11 @@ class PostgreDatabaseManager extends DatabaseManager {
   }
 
   async getUserById(id) {
-    return await this.User.findByPk(id);
+    return await this.User.findOne({ where: { id } });
   }
 
   async updateUser(id, data) {
-    const user = await this.User.findByPk(id);
+    const user = await this.User.findOne({ where: { id } });
     if (!user) return null;
     return await user.update(data);
   }
