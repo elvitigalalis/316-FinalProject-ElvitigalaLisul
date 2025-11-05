@@ -19,6 +19,11 @@ async function resetPostgre() {
   class User extends Model {}
   User.init(
     {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+      },
       firstName: { type: DataTypes.STRING, allowNull: false },
       lastName: { type: DataTypes.STRING, allowNull: false },
       email: { type: DataTypes.STRING, allowNull: false, unique: true },
@@ -30,6 +35,11 @@ async function resetPostgre() {
   class Playlist extends Model {}
   Playlist.init(
     {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+      },
       name: { type: DataTypes.STRING, allowNull: false },
       ownerEmail: { type: DataTypes.STRING, allowNull: false },
       songs: { type: DataTypes.JSONB, allowNull: false },

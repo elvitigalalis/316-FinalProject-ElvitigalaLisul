@@ -2,7 +2,6 @@ const { Sequelize, DataTypes, Model } = require("sequelize");
 const dotenv = require("dotenv");
 const DatabaseManager = require("../DatabaseManager");
 dotenv.config({ path: __dirname + "/../../../.env" });
-const crypto = require("crypto");
 
 class PostgreDatabaseManager extends DatabaseManager {
   constructor() {
@@ -40,8 +39,8 @@ class PostgreDatabaseManager extends DatabaseManager {
     User.init(
       {
         id: {
-          type: DataTypes.STRING,
-          defaultValue: () => crypto.randomUUID(),
+          type: DataTypes.UUID,
+          defaultValue: DataTypes.UUIDV4,
           primaryKey: true,
         },
         firstName: { type: DataTypes.STRING, allowNull: false },
@@ -56,8 +55,8 @@ class PostgreDatabaseManager extends DatabaseManager {
     Playlist.init(
       {
         id: {
-          type: DataTypes.STRING,
-          defaultValue: () => crypto.randomUUID(),
+          type: DataTypes.UUID,
+          defaultValue: DataTypes.UUIDV4,
           primaryKey: true,
         },
         name: { type: DataTypes.STRING, allowNull: false },
