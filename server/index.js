@@ -28,15 +28,10 @@ app.use("/store", storeRouter);
 
 // INITIALIZE OUR DATABASE OBJECT (CHECK FOR CONNECTION TOO)
 const db = require("./db");
-if (process.env.DB_TYPE === "mongodb") {
-  db.getConnection().on("error", console.error.bind(console, "Database connection error:"));
-} else if (process.env.DB_TYPE === "postgresql") {
-  db.getConnection().authenticate().catch((err) => {
-    console.error("Database connection error:", err);
-  });
-} else {
-  throw new Error("Unsupported DB_TYPE in .env file: " + process.env.DB_TYPE);
-}
+db.getConnection().on(
+  "error",
+  console.error.bind(console, "Database connection error:")
+);
 
 // PUT THE SERVER IN LISTENING MODE
 app.listen(PORT, () =>
