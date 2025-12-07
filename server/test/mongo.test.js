@@ -10,8 +10,6 @@ let db;
 import dotenv from "dotenv";
 dotenv.config({ path: __dirname + "/../.env" });
 
-console.log("Loaded DB_TYPE before import:", process.env.DB_TYPE);
-
 let createdUser;
 let createdPlaylist;
 /**
