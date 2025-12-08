@@ -17,6 +17,7 @@ import {
   inject our store into all the components in our application.
   
   @author McKilla Gorilla
+  @author elvitigalalis
 */
 const App = () => {
   return (
@@ -30,7 +31,6 @@ const App = () => {
             <Route path="/register/" exact component={RegisterScreen} />
             <Route path="/account/" exact component={EditUserScreen} />
             <Route path="/playlist/:id" exact component={WorkspaceScreen} />
-
           </Switch>
           <Statusbar />
         </GlobalStoreContextProvider>

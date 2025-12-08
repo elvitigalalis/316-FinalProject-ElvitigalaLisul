@@ -9,7 +9,7 @@ import MUIEditSongModal from "./MUIEditSongModal";
 import MUIErrorModal from "./MUIErrorModal";
 import EditUserScreen from "./EditUserScreen";
 //import MUIRemoveSongModal from './MUIRemoveSongModal'
-import RegisterScreen from "./EditUserScreen";
+import RegisterScreen from "./RegisterScreen";
 import SongCard from "./SongCard";
 import SplashScreen from "./SplashScreen";
 import Statusbar from "./Statusbar";
