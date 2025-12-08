@@ -2,6 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import { GlobalStoreContext } from "../store";
 import PlaylistCard from "./PlaylistCard.js";
 import MUIDeleteModal from "./MUIDeleteModal";
+import MUIPlayPlaylistModal from "./MUIPlayPlaylistModal.js";
+
+import AuthContext from "../auth";
 
 import AddIcon from "@mui/icons-material/Add";
 import Fab from "@mui/material/Fab";
@@ -239,6 +242,7 @@ const HomeScreen = () => {
         </Grid>
       </Grid>
       <MUIDeleteModal />
+      <MUIPlayPlaylistModal />
     </Box>
   );
 };

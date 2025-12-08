@@ -32,6 +32,7 @@ export const GlobalStoreActionType = {
   EDIT_SONG: "EDIT_SONG",
   REMOVE_SONG: "REMOVE_SONG",
   HIDE_MODALS: "HIDE_MODALS",
+  PLAY_PLAYLIST: "PLAY_PLAYLIST",
 };
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -42,6 +43,7 @@ const CurrentModal = {
   DELETE_LIST: "DELETE_LIST",
   EDIT_SONG: "EDIT_SONG",
   ERROR: "ERROR",
+  PLAY_PLAYLIST: "PLAY_PLAYLIST",
 };
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -191,6 +193,19 @@ function GlobalStoreContextProvider(props) {
           currentList: store.currentList,
           currentSongIndex: payload.currentSongIndex,
           currentSong: payload.currentSong,
+          newListCounter: store.newListCounter,
+          listNameActive: false,
+          listIdMarkedForDeletion: null,
+          listMarkedForDeletion: null,
+        });
+      }
+      case GlobalStoreActionType.PLAY_PLAYLIST: {
+        return setStore({
+          currentModal: CurrentModal.PLAY_PLAYLIST,
+          idNamePairs: store.idNamePairs,
+          currentList: payload,
+          currentSongIndex: -1,
+          currentSong: null,
           newListCounter: store.newListCounter,
           listNameActive: false,
           listIdMarkedForDeletion: null,
@@ -348,15 +363,15 @@ function GlobalStoreContextProvider(props) {
       let response = await storeRequestSender.getPlaylistById(id);
       if (response.data.success) {
         let playlist = response.data.playlist;
-        
+
         playlist.listeners = (playlist.listeners || 0) + 1;
         await storeRequestSender.updatePlaylistById(playlist._id, playlist);
 
         storeReducer({
-          type: GlobalStoreActionType.SET_CURRENT_LIST,
+          type: GlobalStoreActionType.PLAY_PLAYLIST,
           payload: playlist,
         });
-        history.push("/playlist/" + (playlist._id || playlist.id));
+        // history.push("/playlist/" + (playlist._id || playlist.id) + "/play");
       }
     }
     asyncPlayPlaylist(id);
@@ -419,6 +434,9 @@ function GlobalStoreContextProvider(props) {
   };
   store.isErrorModalOpen = () => {
     return store.currentModal === CurrentModal.ERROR;
+  };
+  store.isPlayPlaylistModalOpen = () => {
+    return store.currentModal === CurrentModal.PLAY_PLAYLIST;
   };
 
   // THE FOLLOWING 8 FUNCTIONS ARE FOR COORDINATING THE UPDATING
