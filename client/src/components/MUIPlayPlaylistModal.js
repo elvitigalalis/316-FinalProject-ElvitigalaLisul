@@ -41,10 +41,24 @@ export default function MUIPlayPlaylistModal() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isRepeat, setIsRepeat] = useState(false);
 
-  const playerRef = useRef(null);
+  const indexRef = useRef(currentSongIndex);
+  const repeatRef = useRef(isRepeat);
+  const songsRef = useRef([]);
+
+  useEffect(() => {
+    indexRef.current = currentSongIndex;
+  }, [currentSongIndex]);
+
+  useEffect(() => {
+    repeatRef.current = isRepeat;
+  }, [isRepeat]);
 
   const playlist = store.currentList;
   const songs = playlist ? playlist.songs : [];
+
+  useEffect(() => {
+    songsRef.current = songs;
+  }, [songs]);
 
   const [userInfo, setUserInfo] = useState(null);
 
@@ -52,15 +66,12 @@ export default function MUIPlayPlaylistModal() {
     if (!playlist) return;
 
     async function fetchData() {
-      // console.log("Fetching full playlist for id: " + playlist._id);
       let ownerEmail = playlist.ownerEmail;
 
       if (ownerEmail) {
         if (auth.user && auth.user.email === ownerEmail) {
           setUserInfo(auth.user);
-          console.log("Using auth user for: " + ownerEmail);
         } else {
-          console.log("Fetching user for: " + ownerEmail);
           try {
             const user = await store.getUserByEmail(ownerEmail);
             setUserInfo(user);
@@ -101,8 +112,7 @@ export default function MUIPlayPlaylistModal() {
         loadPlayer();
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [store.currentModal, playlist]);
+  }, [store.currentModal]);
 
   function loadPlayer() {
     if (!songs || songs.length === 0) return;
@@ -122,7 +132,6 @@ export default function MUIPlayPlaylistModal() {
         },
       });
       setPlayer(newPlayer);
-      playerRef.current = newPlayer;
     }
   }
 
@@ -133,7 +142,27 @@ export default function MUIPlayPlaylistModal() {
 
   function onPlayerStateChange(event) {
     if (event.data === 0) {
-      handleMediaEnd();
+      // VIDEO ENDED
+      const currentIndex = indexRef.current;
+      const repeating = repeatRef.current;
+      const currentSongs = songsRef.current;
+
+      let nextIndex = currentIndex + 1;
+
+      if (nextIndex >= currentSongs.length) {
+        if (repeating) {
+          nextIndex = 0;
+        } else {
+          setIsPlaying(false);
+          return;
+        }
+      }
+
+      const nextVideoId = currentSongs[nextIndex].youTubeId;
+      event.target.loadVideoById(nextVideoId);
+
+      setCurrentSongIndex(nextIndex);
+      setIsPlaying(true);
     } else if (event.data === 1) {
       setIsPlaying(true);
     } else if (event.data === 2) {
@@ -152,22 +181,14 @@ export default function MUIPlayPlaylistModal() {
     }
   }
 
-  function handleMediaEnd() {
-    if (isRepeat) {
-      loadVideo(currentSongIndex);
-    } else {
-      handleNext();
-    }
-  }
-
   function handlePrev() {
-    let newIndex = currentSongIndex - 1;
+    let newIndex = indexRef.current - 1;
     if (newIndex < 0) newIndex = songs.length - 1;
     loadVideo(newIndex);
   }
 
   function handleNext() {
-    let newIndex = currentSongIndex + 1;
+    let newIndex = indexRef.current + 1;
     if (newIndex >= songs.length) newIndex = 0;
     loadVideo(newIndex);
   }
