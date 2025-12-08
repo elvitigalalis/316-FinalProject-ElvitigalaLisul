@@ -42,7 +42,7 @@ export default function EditUserScreen() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    auth.updateUser(
+    auth.editUser(
       formData.get("username"),
       formData.get("email"),
       formData.get("password"),
@@ -184,7 +184,6 @@ export default function EditUserScreen() {
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
-                    required
                     fullWidth
                     name="password"
                     label="Password"
@@ -195,7 +194,6 @@ export default function EditUserScreen() {
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
-                    required
                     fullWidth
                     name="passwordVerify"
                     label="Password Confirm"
