@@ -13,10 +13,9 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 
-import storeRequestSender from "../store/requests";
-
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
+import { StyledEngineProvider } from "@mui/material";
 
 /*
     This is a card in our list of top 5 lists.
@@ -39,11 +38,11 @@ function PlaylistCard(props) {
       let ownerEmail = null;
 
       try {
-        playlistData = await storeRequestSender.getPlaylistById(idNamePair._id);
+        playlistData = await store.getPlaylistById(idNamePair._id);
         // console.log("Fetched playlist data:", playlistData);
         // console.log("Songs", playlistData.data.playlist.songs);
-        setFullPlaylist(playlistData.data.playlist);
-        ownerEmail = playlistData.data.playlist.ownerEmail;
+        setFullPlaylist(playlistData);
+        ownerEmail = playlistData.ownerEmail;
       } catch (error) {
         console.error("Error fetching full playlist:", error);
         return;
@@ -56,9 +55,9 @@ function PlaylistCard(props) {
         } else {
           console.log("Fetching user for: " + ownerEmail);
           try {
-            const user = await storeRequestSender.getUserByEmail(ownerEmail);
+            const user = await store.getUserByEmail(ownerEmail);
             // console.log("Fetched user data:", user.data.user);
-            setUserInfo(user.data.user);
+            setUserInfo(user);
           } catch (error) {
             console.error("Error fetching user:", error);
             setUserInfo({
@@ -74,7 +73,7 @@ function PlaylistCard(props) {
     if (idNamePair._id) {
       fetchData();
     }
-  }, [idNamePair._id, auth.user, store]);
+  }, [idNamePair._id, auth.user]);
 
   const pData = fullPlaylist || {};
   let avatarSrc = "";
@@ -137,6 +136,7 @@ function PlaylistCard(props) {
 
   function handleDuplicate(event) {
     event.stopPropagation();
+    store.duplicatePlaylist(idNamePair._id);
     console.log("duplicating playlist " + idNamePair._id);
   }
 
@@ -271,8 +271,7 @@ function PlaylistCard(props) {
                 variant="body2"
                 sx={{ py: 0.5, fontSize: "1.1rem" }}
               >
-                {index + 1}. {song.title} by {song.artist} ({song.year}) -{" "}
-                {song.duration}
+                {index + 1}. {song.title} by {song.artist} ({song.year})
               </Typography>
             ))
           ) : (
