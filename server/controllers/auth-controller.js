@@ -1,6 +1,7 @@
 const auth = require("../auth");
 const bcrypt = require("bcryptjs");
 const db = require("../db");
+const { editUser } = require("../../client/src/auth/requests");
 
 getLoggedIn = async (req, res) => {
   try {
@@ -176,6 +177,74 @@ registerUser = async (req, res) => {
     console.error(err);
     res.status(500).send();
   }
+
+  editUser = async (req, res) => {
+    try {
+      const userId = auth.verifyUser(req);
+      if (!userId) {
+        return res.status(401).json({
+          errorMessage: "You must be logged in to edit your profile.",
+        });
+      }
+
+      const { username, email, password, passwordVerify, profilePicture } =
+        req.body;
+
+      if (!username || !email) {
+        return res.status(400).json({
+          errorMessage:
+            "Please enter all required fields (username and email).",
+        });
+      }
+
+      const existingUser = await db.getUserByEmail(email);
+      if (existingUser && existingUser._id.toString() !== userId) {
+        return res.status(400).json({
+          errorMessage: "An account with this email address already exists.",
+        });
+      }
+
+      let passwordHash;
+      if (password && password.length > 0) {
+        if (password.length < 8) {
+          return res.status(400).json({
+            errorMessage: "Please enter a password of at least 8 characters.",
+          });
+        }
+        if (password !== passwordVerify) {
+          return res.status(400).json({
+            errorMessage: "Please enter the same password twice.",
+          });
+        }
+        const saltRounds = 10;
+        const salt = await bcrypt.genSalt(saltRounds);
+        passwordHash = await bcrypt.hash(password, salt);
+      }
+
+      const user = await db.getUserById(userId);
+      user.username = username;
+      user.email = email;
+      user.profilePicture = profilePicture;
+
+      if (passwordHash) {
+        user.passwordHash = passwordHash;
+      }
+
+      await user.save();
+
+      return res.status(200).json({
+        success: true,
+        user: {
+          username: user.username,
+          email: user.email,
+          profilePicture: user.profilePicture,
+        },
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send();
+    }
+  };
 };
 
 module.exports = {
@@ -183,4 +252,5 @@ module.exports = {
   registerUser,
   loginUser,
   logoutUser,
+  editUser,
 };

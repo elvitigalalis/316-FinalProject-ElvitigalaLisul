@@ -89,7 +89,7 @@ export default function EditUserScreen() {
   };
 
   if (!auth.user) {
-    return <Typography>Loading...</Typography>;
+    console.log("Loading for edit screen");
   }
 
   let modalJSX = "";

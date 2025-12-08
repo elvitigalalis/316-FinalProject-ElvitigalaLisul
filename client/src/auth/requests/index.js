@@ -67,14 +67,31 @@ export const registerUser = (
     email: email,
     password: password,
     passwordVerify: passwordVerify,
-    profilePicture: profilePicture
+    profilePicture: profilePicture,
   });
 };
+export const editUser = (
+  username,
+  email,
+  password,
+  passwordVerify,
+  profilePicture
+) => {
+  return request("/editUser", "PUT", {
+    username: username,
+    email: email,
+    password: password,
+    passwordVerify: passwordVerify,
+    profilePicture: profilePicture,
+  });
+};
+
 const apis = {
   getLoggedIn,
   registerUser,
   loginUser,
   logoutUser,
+  editUser,
 };
 
 export default apis;
