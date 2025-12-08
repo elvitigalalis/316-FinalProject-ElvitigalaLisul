@@ -1,6 +1,6 @@
 // THESE ARE THE ORIGINAL PLAYLISTS
 const { readFileSync } = require('fs')
-const fileContent = readFileSync('./public/data/PlaylisterData.json', 'utf-8');
+const fileContent = readFileSync('./playlisterdata/public/data/PlaylisterData.json', 'utf-8');
 const playlisterData = JSON.parse(fileContent);
 let playlist = playlisterData.playlists.shift();
 let songsMap = [];
