@@ -76,6 +76,7 @@ loginUser = async (req, res) => {
         user: {
           username: existingUser.username,
           email: existingUser.email,
+          profilePicture: existingUser.profilePicture,
         },
       });
   } catch (err) {
@@ -235,6 +236,7 @@ registerUser = async (req, res) => {
         user: {
           username: newUser.username,
           email: newUser.email,
+          profilePicture: newUser.profilePicture,
         },
       });
 

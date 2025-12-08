@@ -97,13 +97,14 @@ export default function AppBanner() {
   function getAccountMenu(loggedIn) {
     let userInitials = auth.getUserInitials();
     console.log("userInitials: " + userInitials);
+
     if (loggedIn) {
       if (auth.user && auth.user.profilePicture) {
         return (
           <Box
             sx={{
-              width: 10,
-              height: 10,
+              width: 50,
+              height: 50,
               borderRadius: "50%",
               backgroundImage: "url(" + auth.user.profilePicture + ")",
               backgroundSize: "cover",
@@ -113,8 +114,17 @@ export default function AppBanner() {
           />
         );
       }
+
+      if (!auth.user) {
+        console.log("NO USER LOADED");
+        console.log(auth.user);
+      }
+      if (!auth.user.profilePicture) {
+        console.log("NO PROFILE PICTURE");
+      }
+
       return <div>{userInitials}</div>;
-    } else return <AccountCircle />;
+    } else return <AccountCircle sx={{ width: 50, height: 50 }} />;
   }
 
   return (
@@ -125,7 +135,7 @@ export default function AppBanner() {
             variant="h4"
             noWrap
             component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}
+            sx={{ display: { xs: "none", sm: "block" }, fontSize: "h2.fontSize" }}
           >
             <Link
               onClick={handleHouseClick}

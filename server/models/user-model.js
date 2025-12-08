@@ -7,7 +7,7 @@ const UserSchema = new Schema(
     username: { type: String, required: true },
     email: { type: String, required: true },
     passwordHash: { type: String, required: true },
-    profilePicture: { type: String },
+    profilePicture: { type: String, required: false },
     playlists: [{ type: ObjectId, ref: "Playlist" }],
   },
   { timestamps: true }
