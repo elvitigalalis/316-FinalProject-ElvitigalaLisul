@@ -218,6 +218,7 @@ export default function MUIPlayPlaylistModal() {
       setPlayer(null);
     }
     store.hideModals();
+    store.loadIdNamePairs();
   }
 
   // avatar logic

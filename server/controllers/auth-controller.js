@@ -19,6 +19,7 @@ getLoggedIn = async (req, res) => {
     return res.status(200).json({
       loggedIn: true,
       user: {
+        id : loggedInUser._id || loggedInUser.id,
         username: loggedInUser.username,
         email: loggedInUser.email,
         profilePicture: loggedInUser.profilePicture,
@@ -75,6 +76,7 @@ loginUser = async (req, res) => {
       .json({
         success: true,
         user: {
+          id: existingUser._id || existingUser.id,
           username: existingUser.username,
           email: existingUser.email,
           profilePicture: existingUser.profilePicture,
@@ -153,6 +155,7 @@ editUser = async (req, res) => {
     return res.status(200).json({
       success: true,
       user: {
+        id: user._id || user.id,
         username: user.username,
         email: user.email,
         profilePicture: user.profilePicture,
@@ -235,6 +238,7 @@ registerUser = async (req, res) => {
       .json({
         success: true,
         user: {
+          id: newUser._id || newUser.id,
           username: newUser.username,
           email: newUser.email,
           profilePicture: newUser.profilePicture,

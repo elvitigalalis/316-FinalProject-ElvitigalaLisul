@@ -364,14 +364,27 @@ function GlobalStoreContextProvider(props) {
       if (response.data.success) {
         let playlist = response.data.playlist;
 
-        playlist.listeners = (playlist.listeners || 0) + 1;
-        await storeRequestSender.updatePlaylistById(playlist._id, playlist);
+        if (!playlist.listenerIds) {
+          playlist.listenerIds = [];
+        }
+
+        if (auth.user) {
+          let userId = auth.user.id;
+          console.log("user", auth.user);
+          if (!playlist.listenerIds.includes(userId)) {
+            playlist.listenerIds.push(userId);
+
+            playlist.listenerCount = playlist.listenerIds.length;
+
+            await storeRequestSender.updatePlaylistById(playlist._id, playlist);
+          }
+        }
 
         storeReducer({
           type: GlobalStoreActionType.PLAY_PLAYLIST,
           payload: playlist,
         });
-        // history.push("/playlist/" + (playlist._id || playlist.id) + "/play");
+        // history.push("/play");
       }
     }
     asyncPlayPlaylist(id);

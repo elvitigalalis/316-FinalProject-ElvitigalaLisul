@@ -73,13 +73,13 @@ function PlaylistCard(props) {
     if (idNamePair._id) {
       fetchData();
     }
-  }, [idNamePair._id, auth.user]);
+  }, [idNamePair, auth.user]);
 
   const pData = fullPlaylist || {};
   let avatarSrc = "";
   let avatarText = "P";
   let currentUsername = "Loading...";
-  let listeners = pData.listeners || 0;
+  let listeners = pData.listenerCount || 0;
   let songs = pData.songs || [];
 
   if (userInfo) {
