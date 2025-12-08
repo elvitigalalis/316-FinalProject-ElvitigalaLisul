@@ -18,6 +18,7 @@ import IconButton from "@mui/material/IconButton";
 import ClearIcon from "@mui/icons-material/Clear";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import MUIEditPlaylistModal from "./MUIEditPlaylistModal.js";
 
 /*
     This React component lists all the top5 lists in the UI.
@@ -243,6 +244,7 @@ const HomeScreen = () => {
       </Grid>
       <MUIDeleteModal />
       <MUIPlayPlaylistModal />
+      <MUIEditPlaylistModal />
     </Box>
   );
 };

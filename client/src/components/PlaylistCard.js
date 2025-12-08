@@ -47,7 +47,7 @@ function PlaylistCard(props) {
         console.error("Error fetching full playlist:", error);
         return;
       }
-    
+
       if (ownerEmail) {
         if (auth.user && auth.user.email === ownerEmail) {
           setUserInfo(auth.user);
@@ -112,15 +112,8 @@ function PlaylistCard(props) {
 
   function handleToggleEdit(event) {
     event.stopPropagation();
-    toggleEdit();
-  }
-
-  function toggleEdit() {
-    let newActive = !editActive;
-    if (newActive) {
-      store.setIsListNameEditActive();
-    }
-    setEditActive(newActive);
+    console.log("handleToggleEdit for " + idNamePair._id);
+    store.editPlaylist(idNamePair._id);
   }
 
   async function handleDeleteList(event, id) {
@@ -140,13 +133,6 @@ function PlaylistCard(props) {
     console.log("duplicating playlist " + idNamePair._id);
   }
 
-  function handleKeyPress(event) {
-    if (event.code === "Enter") {
-      let id = event.target.id.substring("list-".length);
-      store.changeListName(id, text);
-      toggleEdit();
-    }
-  }
   function handleUpdateText(event) {
     setText(event.target.value);
   }
@@ -295,7 +281,6 @@ function PlaylistCard(props) {
         name="name"
         autoComplete="Playlist Name"
         className="list-card"
-        onKeyPress={handleKeyPress}
         onChange={handleUpdateText}
         defaultValue={idNamePair.name}
         inputProps={{ style: { fontSize: 48 } }}

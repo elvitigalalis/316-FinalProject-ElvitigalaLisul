@@ -13,6 +13,7 @@ import AuthContext from "../auth";
     which makes use of things like actions and reducers. 
     
     @author McKilla Gorilla
+    @author elvitigalalis
 */
 
 // THIS IS THE CONTEXT WE'LL USE TO SHARE OUR STORE
@@ -33,6 +34,7 @@ export const GlobalStoreActionType = {
   REMOVE_SONG: "REMOVE_SONG",
   HIDE_MODALS: "HIDE_MODALS",
   PLAY_PLAYLIST: "PLAY_PLAYLIST",
+  EDIT_PLAYLIST: "EDIT_PLAYLIST",
 };
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -44,6 +46,7 @@ const CurrentModal = {
   EDIT_SONG: "EDIT_SONG",
   ERROR: "ERROR",
   PLAY_PLAYLIST: "PLAY_PLAYLIST",
+  EDIT_PLAYLIST: "EDIT_PLAYLIST",
 };
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -77,9 +80,9 @@ function GlobalStoreContextProvider(props) {
       // LIST UPDATE OF ITS NAME
       case GlobalStoreActionType.CHANGE_LIST_NAME: {
         return setStore({
-          currentModal: CurrentModal.NONE,
+          currentModal: CurrentModal.NONE, // Keep modal open or consistent
           idNamePairs: payload.idNamePairs,
-          currentList: payload.playlist,
+          currentList: payload.playlist, // Updated playlist with new name
           currentSongIndex: -1,
           currentSong: null,
           newListCounter: store.newListCounter,
@@ -147,7 +150,10 @@ function GlobalStoreContextProvider(props) {
       // UPDATE A LIST
       case GlobalStoreActionType.SET_CURRENT_LIST: {
         return setStore({
-          currentModal: CurrentModal.NONE,
+          currentModal:
+            store.currentModal === CurrentModal.EDIT_PLAYLIST
+              ? CurrentModal.EDIT_PLAYLIST
+              : CurrentModal.NONE,
           idNamePairs: store.idNamePairs,
           currentList: payload,
           currentSongIndex: -1,
@@ -188,7 +194,10 @@ function GlobalStoreContextProvider(props) {
       }
       case GlobalStoreActionType.REMOVE_SONG: {
         return setStore({
-          currentModal: CurrentModal.NONE,
+          currentModal:
+            store.currentModal === CurrentModal.EDIT_PLAYLIST
+              ? CurrentModal.EDIT_PLAYLIST
+              : CurrentModal.NONE,
           idNamePairs: store.idNamePairs,
           currentList: store.currentList,
           currentSongIndex: payload.currentSongIndex,
@@ -202,6 +211,19 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.PLAY_PLAYLIST: {
         return setStore({
           currentModal: CurrentModal.PLAY_PLAYLIST,
+          idNamePairs: store.idNamePairs,
+          currentList: payload,
+          currentSongIndex: -1,
+          currentSong: null,
+          newListCounter: store.newListCounter,
+          listNameActive: false,
+          listIdMarkedForDeletion: null,
+          listMarkedForDeletion: null,
+        });
+      }
+      case GlobalStoreActionType.EDIT_PLAYLIST: {
+        return setStore({
+          currentModal: CurrentModal.EDIT_PLAYLIST,
           idNamePairs: store.idNamePairs,
           currentList: payload,
           currentSongIndex: -1,
@@ -275,7 +297,10 @@ function GlobalStoreContextProvider(props) {
                     playlist: playlist,
                   },
                 });
-                store.setCurrentList(id);
+                // HIGHLIGHTED FIX: Removed store.setCurrentList(id)
+                // We already updated the reducer above with the new name.
+                // Calling setCurrentList triggers a new fetch and SET_CURRENT_LIST action,
+                // which might reset the modal state to NONE or cause flicker.
               }
             }
             getListPairs(playlist);
@@ -390,6 +415,21 @@ function GlobalStoreContextProvider(props) {
     asyncPlayPlaylist(id);
   };
 
+  store.editPlaylist = function (id) {
+    async function asyncEditPlaylist(id) {
+      let response = await storeRequestSender.getPlaylistById(id);
+      if (response.data.success) {
+        let playlist = response.data.playlist;
+        storeReducer({
+          type: GlobalStoreActionType.EDIT_PLAYLIST,
+          payload: playlist,
+        });
+      }
+    }
+    asyncEditPlaylist(id);
+    console.log("editPlaylist for " + id);
+  };
+
   // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION
   // OF A LIST, WHICH INCLUDES USING A VERIFICATION MODAL. THE
   // FUNCTIONS ARE markListForDeletion, deleteList, deleteMarkedList,
@@ -451,6 +491,9 @@ function GlobalStoreContextProvider(props) {
   store.isPlayPlaylistModalOpen = () => {
     return store.currentModal === CurrentModal.PLAY_PLAYLIST;
   };
+  store.isEditPlaylistModalOpen = () => {
+    return store.currentModal === CurrentModal.EDIT_PLAYLIST;
+  };
 
   // THE FOLLOWING 8 FUNCTIONS ARE FOR COORDINATING THE UPDATING
   // OF A LIST, WHICH INCLUDES DEALING WITH THE TRANSACTION STACK. THE
@@ -471,7 +514,7 @@ function GlobalStoreContextProvider(props) {
             type: GlobalStoreActionType.SET_CURRENT_LIST,
             payload: playlist,
           });
-          history.push("/playlist/" + (playlist.id || playlist._id));
+          // history.push("/playlist/" + (playlist.id || playlist._id));
         }
       }
     }
@@ -623,6 +666,12 @@ function GlobalStoreContextProvider(props) {
         store.currentList
       );
       if (response.data.success) {
+        // HIGHLIGHTED FIX: Ensure the modal stays open if we are in EDIT_PLAYLIST mode
+        let nextModal =
+          store.currentModal === CurrentModal.EDIT_PLAYLIST
+            ? CurrentModal.EDIT_PLAYLIST
+            : CurrentModal.NONE;
+
         storeReducer({
           type: GlobalStoreActionType.SET_CURRENT_LIST,
           payload: store.currentList,
