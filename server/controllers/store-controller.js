@@ -126,7 +126,7 @@ getPlaylistById = async (req, res) => {
   }
 };
 getPlaylistPairs = async (req, res) => {
-//   console.log("getPlaylistPairs endpoint HIT");
+  //   console.log("getPlaylistPairs endpoint HIT");
   if (auth.verifyUser(req) === null) {
     return res.status(400).json({
       errorMessage: "UNAUTHORIZED",
@@ -239,6 +239,34 @@ updatePlaylist = async (req, res) => {
     });
   }
 };
+
+getUserByEmail = async (req, res) => {
+  try {
+    const email = req.params.email;
+    const user = await db.getUserByEmail(email);
+    
+    if (!user) {
+      return res.status(404).json({
+        errorMessage: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      user: {
+        username: user.username,
+        email: user.email,
+        profilePicture: user.profilePicture,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      errorMessage: err,
+    });
+  }
+};
+
 module.exports = {
   createPlaylist,
   deletePlaylist,
@@ -246,4 +274,5 @@ module.exports = {
   getPlaylistPairs,
   getPlaylists,
   updatePlaylist,
+  getUserByEmail,
 };

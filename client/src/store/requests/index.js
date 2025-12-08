@@ -63,6 +63,7 @@ export const updatePlaylistById = (id, playlist) => {
     playlist: playlist,
   });
 };
+export const getUserByEmail = (email) => request(`/user/${email}`, "GET");
 
 const apis = {
   createPlaylist,
@@ -70,6 +71,7 @@ const apis = {
   getPlaylistById,
   getPlaylistPairs,
   updatePlaylistById,
+  getUserByEmail,
 };
 
 export default apis;
