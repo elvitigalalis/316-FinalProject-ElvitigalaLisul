@@ -1,8 +1,7 @@
 {
     "users": [
         {
-            "firstName": "Joe",
-            "lastName": "Shmo",
+            "username": "Joe",
             "email": "joe@shmo.com",
             "passwordHash": "$2a$10$dPEwsAVi1ojv2RfxxTpZjuKSAbep7zEKb5myegm.ATbQ4sJk4agGu",
             "playlists": [
@@ -11,8 +10,7 @@
             ]
         },
         {
-            "firstName": "Jane",
-            "lastName": "Doe",
+            "username": "Jane",
             "email": "jane@doe.com",
             "passwordHash": "$2a$10$dPEwsAVi1ojv2RfxxTpZjuKSAbep7zEKb5myegm.ATbQ4sJk4agGu",
             "playlists": [
@@ -20,8 +18,7 @@
             ]
         },
         {
-            "firstName": "Lisul",
-            "lastName": "Elvitigala",
+            "username": "Lisul",
             "email": "elvitigalalis@gmail.com",
             "passwordHash": "$2a$10$dPEwsAVi1ojv2RfxxTpZjuKSAbep7zEKb5myegm.ATbQ4sJk4agGu",
             "playlists": [
