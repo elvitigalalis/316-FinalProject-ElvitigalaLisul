@@ -11,6 +11,7 @@ import Box from '@mui/material/Box'
     This React component lists all the top5 lists in the UI.
     
     @author McKilla Gorilla
+    @author elvitigalalis
 */
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
