@@ -78,6 +78,9 @@ export default function AppBanner() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
+      <MenuItem onClick={handleMenuClose}>
+        <Link to="/account/">Edit Account</Link>
+      </MenuItem>
       <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </Menu>
   );
@@ -94,8 +97,24 @@ export default function AppBanner() {
   function getAccountMenu(loggedIn) {
     let userInitials = auth.getUserInitials();
     console.log("userInitials: " + userInitials);
-    if (loggedIn) return <div>{userInitials}</div>;
-    else return <AccountCircle />;
+    if (loggedIn) {
+      if (auth.user && auth.user.profilePicture) {
+        return (
+          <Box
+            sx={{
+              width: 10,
+              height: 10,
+              borderRadius: "50%",
+              backgroundImage: "url(" + auth.user.profilePicture + ")",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              border: "1px solid white",
+            }}
+          />
+        );
+      }
+      return <div>{userInitials}</div>;
+    } else return <AccountCircle />;
   }
 
   return (

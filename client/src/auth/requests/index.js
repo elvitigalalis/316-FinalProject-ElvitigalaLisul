@@ -56,18 +56,18 @@ export const loginUser = (email, password) => {
 };
 export const logoutUser = () => request("/logout", "GET");
 export const registerUser = (
-  firstName,
-  lastName,
+  username,
   email,
   password,
-  passwordVerify
+  passwordVerify,
+  profilePicture
 ) => {
   return request("/register", "POST", {
-    firstName: firstName,
-    lastName: lastName,
+    username: username,
     email: email,
     password: password,
     passwordVerify: passwordVerify,
+    profilePicture: profilePicture
   });
 };
 const apis = {
