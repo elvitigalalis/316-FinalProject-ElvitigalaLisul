@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Button, Typography, Stack } from "@mui/material";
 import logo from "../images/splash-screen-icon.png";
+import { Link } from "react-router-dom";
 
 export default function SplashScreen() {
   return (
@@ -12,13 +13,13 @@ export default function SplashScreen() {
       <img src={logo} alt="Playlister Logo" id="splash-logo" />
 
       <Stack direction="row">
-        <Button variant="contained" id="splash-button">
+        <Button variant="contained" id="splash-button" component={Link} to="/">
           Continue as Guest
         </Button>
-        <Button variant="contained" id="splash-button">
+        <Button variant="contained" id="splash-button" component={Link} to="/login">
           Login
         </Button>
-        <Button variant="contained" id="splash-button">
+        <Button variant="contained" id="splash-button" component={Link} to="/register">
           Create Account
         </Button>
       </Stack>
