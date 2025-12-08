@@ -124,7 +124,7 @@ const HomeScreen = () => {
       <Grid container sx={{ height: "100%" }}>
         <Grid
           item
-          xs={3}
+          xs={4}
           sx={{
             height: "100%",
             bgcolor: "background.paper",
@@ -177,7 +177,7 @@ const HomeScreen = () => {
 
         <Grid
           item
-          xs={9}
+          xs={8}
           sx={{
             height: "100%",
             position: "relative",
