@@ -238,6 +238,7 @@ const HomeScreen = () => {
           </Fab>
         </Grid>
       </Grid>
+      <MUIDeleteModal />
     </Box>
   );
 };

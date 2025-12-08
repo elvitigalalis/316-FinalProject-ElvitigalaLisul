@@ -241,7 +241,7 @@ function PlaylistCard(props) {
           )}
 
           <Button onClick={handleDuplicate} variant="outlined" size="small">
-            Duplicate
+            Copy
           </Button>
           <Button
             onClick={handlePlay}

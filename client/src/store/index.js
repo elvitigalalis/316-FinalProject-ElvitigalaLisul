@@ -368,6 +368,7 @@ function GlobalStoreContextProvider(props) {
   // showDeleteListModal, and hideDeleteListModal
   store.markListForDeletion = function (id) {
     async function getListToDelete(id) {
+      console.log("markListForDeletion: " + id);
       let response = await storeRequestSender.getPlaylistById(id);
       if (response.data.success) {
         let playlist = response.data.playlist;
@@ -381,6 +382,7 @@ function GlobalStoreContextProvider(props) {
   };
   store.deleteList = function (id) {
     async function processDelete(id) {
+      console.log("deleteList: " + id);
       let response = await storeRequestSender.deletePlaylistById(id);
       store.loadIdNamePairs();
       if (response.data.success) {
