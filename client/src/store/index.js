@@ -324,6 +324,44 @@ function GlobalStoreContextProvider(props) {
     asyncLoadIdNamePairs();
   };
 
+  store.duplicatePlaylist = async function (id) {
+    async function asyncDuplicatePlaylist(id) {
+      let response = await storeRequestSender.getPlaylistById(id);
+      if (response.data.success) {
+        let playlist = response.data.playlist;
+        let newListName = playlist.name + " (Copy)";
+        response = await storeRequestSender.createPlaylist(
+          newListName,
+          playlist.songs,
+          auth.user.email
+        );
+        if (response.status === 201) {
+          store.loadIdNamePairs();
+        }
+      }
+    }
+    asyncDuplicatePlaylist(id);
+  };
+
+  store.playPlaylist = function (id) {
+    async function asyncPlayPlaylist(id) {
+      let response = await storeRequestSender.getPlaylistById(id);
+      if (response.data.success) {
+        let playlist = response.data.playlist;
+        
+        playlist.listeners = (playlist.listeners || 0) + 1;
+        await storeRequestSender.updatePlaylistById(playlist._id, playlist);
+
+        storeReducer({
+          type: GlobalStoreActionType.SET_CURRENT_LIST,
+          payload: playlist,
+        });
+        history.push("/playlist/" + (playlist._id || playlist.id));
+      }
+    }
+    asyncPlayPlaylist(id);
+  };
+
   // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION
   // OF A LIST, WHICH INCLUDES USING A VERIFICATION MODAL. THE
   // FUNCTIONS ARE markListForDeletion, deleteList, deleteMarkedList,
