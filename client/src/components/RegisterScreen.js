@@ -1,9 +1,8 @@
-import { useContext } from "react";
+import { useContext, useState, useRef } from "react";
 import AuthContext from "../auth";
 import MUIErrorModal from "./MUIErrorModal";
 import Copyright from "./Copyright";
 
-import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -17,6 +16,9 @@ import Typography from "@mui/material/Typography";
 export default function RegisterScreen() {
   const { auth } = useContext(AuthContext);
 
+  const [imgSrc, setImgSrc] = useState("");
+  const fileInputRef = useRef(null);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -24,8 +26,38 @@ export default function RegisterScreen() {
       formData.get("username"),
       formData.get("email"),
       formData.get("password"),
-      formData.get("passwordVerify")
+      formData.get("passwordVerify"),
+      imgSrc
     );
+  };
+
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.size > 1024 * 1024) {
+        alert("File size too large! Please select a smaller image.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const img = new Image();
+        img.src = reader.result;
+        img.onload = () => {
+          if (img.width !== 250 || img.height !== 250) {
+            alert("Image dimensions must be 250x250 pixels.");
+            return;
+          }
+
+          setImgSrc(reader.result);
+        };
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSelectClick = () => {
+    fileInputRef.current.click();
   };
 
   let modalJSX = "";
@@ -69,11 +101,24 @@ export default function RegisterScreen() {
                   height: 50,
                   bgcolor: "grey.300",
                   borderRadius: "50%",
+                  backgroundImage: "url(" + imgSrc + ")",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                 }}
               ></Box>
+
+              <input
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                ref={fileInputRef}
+                onChange={handleFileSelect}
+              />
+
               <Button
                 variant="contained"
                 size="small"
+                onClick={handleSelectClick}
                 sx={{ mt: 1, fontSize: "10px", minWidth: "auto" }}
               >
                 Select
