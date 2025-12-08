@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import AuthContext from "../auth";
 import { GlobalStoreContext } from "../store";
 
@@ -13,12 +13,15 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 
 export default function AppBanner() {
   const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
+
+  const location = useLocation();
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -127,6 +130,9 @@ export default function AppBanner() {
     } else return <AccountCircle sx={{ width: 50, height: 50 }} />;
   }
 
+  const showPlaylisterNavBar =
+    auth.loggedIn && location.pathname !== "/account/";
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -135,7 +141,10 @@ export default function AppBanner() {
             variant="h4"
             noWrap
             component="div"
-            sx={{ display: { xs: "none", sm: "block" }, fontSize: "h2.fontSize" }}
+            sx={{
+              display: { xs: "none", sm: "block" },
+              fontSize: "h2.fontSize",
+            }}
           >
             <Link
               onClick={handleHouseClick}
@@ -145,6 +154,50 @@ export default function AppBanner() {
               ⌂
             </Link>
           </Typography>
+
+          {showPlaylisterNavBar && (
+            <Box sx={{ display: "flex", gap: 2, ml: 4 }}>
+              <Button
+                component={Link}
+                to="/"
+                sx={{
+                  color: "white",
+                  fontSize: "1.2rem",
+                  fontWeight: "bold",
+                  backgroundColor: "var(--swatch-accent)",
+                }}
+              >
+                Playlists
+              </Button>
+              <Button
+                component={Link}
+                to="/songs/"
+                sx={{
+                  color: "white",
+                  fontSize: "1.2rem",
+                  fontWeight: "bold",
+                  backgroundColor: "var(--swatch-accent)",
+                }}
+              >
+                Song Catalog
+              </Button>
+            </Box>
+          )}
+
+          {showPlaylisterNavBar && (
+            <Box
+              sx={{
+                position: "absolute",
+                left: "50%",
+                transform: "translateX(-50%)",
+              }}
+            >
+              <Typography variant="h4" component="div" sx={{ color: "white" }}>
+                The Playlister
+              </Typography>
+            </Box>
+          )}
+
           <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
           <Box sx={{ height: "90px", display: { xs: "none", md: "flex" } }}>
             <IconButton
