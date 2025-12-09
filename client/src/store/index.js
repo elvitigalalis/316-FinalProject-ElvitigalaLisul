@@ -427,10 +427,28 @@ function GlobalStoreContextProvider(props) {
   };
 
   store.createCatalogSong = async function (songData) {
+    if (
+      !songData.title ||
+      !songData.artist ||
+      !songData.year ||
+      !songData.youTubeId
+    ) {
+      console.log("Missing fields");
+      return;
+    }
+
     const response = await storeRequestSender.createCatalogSong(songData);
+
     if (response.status === 201) {
       store.loadSongCatalog();
       store.hideModals();
+    } else {
+      console.log("Creation failed with status:", response.status);
+      const msg =
+        response.data && response.data.errorMessage
+          ? response.data.errorMessage
+          : "Error: A song with this title, artist, and year already exists.";
+      window.alert(msg);
     }
   };
 
@@ -473,14 +491,6 @@ function GlobalStoreContextProvider(props) {
   store.incrementListen = async function (songId) {
     await storeRequestSender.updateSongStats(songId, "listen");
     store.loadSongCatalog();
-  };
-
-  store.createCatalogSong = async function (songData) {
-    const response = await storeRequestSender.createCatalogSong(songData);
-    if (response.status === 201) {
-      store.loadSongCatalog();
-      store.hideModals();
-    }
   };
 
   store.updateCatalogSong = async function (id, songData, oldYouTubeId) {

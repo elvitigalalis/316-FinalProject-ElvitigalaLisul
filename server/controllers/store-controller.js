@@ -242,12 +242,25 @@ createSong = async (req, res) => {
     const user = await db.getUserById(req.userId);
     if (!user) return res.status(400).json({ errorMessage: "User not found" });
 
+    const existingSong = await db.getConnection().model("Song").findOne({
+      title: body.title,
+      artist: body.artist,
+      year: body.year,
+    });
+
+    if (existingSong) {
+      return res.status(400).json({
+        success: false,
+        errorMessage: "This song already exists in the catalog.",
+      });
+    }
+
     if (user.email === "GUEST@GUEST.com") {
       return res.status(400).json({
         errorMessage: "Guest users cannot add songs.",
       });
     }
-    
+
     const song = await db.createCatalogSong({
       title: body.title,
       artist: body.artist,
