@@ -28,6 +28,7 @@ import MUIEditPlaylistModal from "./MUIEditPlaylistModal.js";
 */
 const HomeScreen = () => {
   const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext); // --- ADDED: Access Auth Context
 
   const [filters, setFilters] = useState({
     name: "",
@@ -93,6 +94,8 @@ const HomeScreen = () => {
       handleSearch();
     }
   };
+
+  const isGuest = auth.user && auth.user.email === "GUEST@GUEST.com";
 
   const sortMenu = (
     <Menu
@@ -160,7 +163,6 @@ const HomeScreen = () => {
           </Typography>
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {/* CHANGED: Iterate over correct keys */}
             {["name", "user", "song", "artist", "year"].map((key) => (
               <TextField
                 key={key}
@@ -248,14 +250,16 @@ const HomeScreen = () => {
             </List>
           </Box>
 
-          <Fab
-            color="primary"
-            aria-label="add"
-            onClick={handleCreateNewList}
-            sx={{ position: "absolute", bottom: 20, right: 20 }}
-          >
-            <AddIcon />
-          </Fab>
+          {!isGuest && (
+            <Fab
+              color="primary"
+              aria-label="add"
+              onClick={handleCreateNewList}
+              sx={{ position: "absolute", bottom: 20, right: 20 }}
+            >
+              <AddIcon />
+            </Fab>
+          )}
         </Grid>
       </Grid>
       <MUIDeleteModal />
