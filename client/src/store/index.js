@@ -426,6 +426,14 @@ function GlobalStoreContextProvider(props) {
     }
   };
 
+  store.createCatalogSong = async function (songData) {
+    const response = await storeRequestSender.createCatalogSong(songData);
+    if (response.status === 201) {
+      store.loadSongCatalog();
+      store.hideModals();
+    }
+  };
+
   store.addSongToPlaylist = async function (playlistId, songData) {
     let response = await storeRequestSender.getPlaylistById(playlistId);
     if (response.data.success) {
@@ -437,9 +445,13 @@ function GlobalStoreContextProvider(props) {
         youTubeId: songData.youTubeId,
       };
       playlist.songs.push(newSong);
+
       await storeRequestSender.updatePlaylistById(playlistId, playlist);
 
-      await storeRequestSender.updateSongStats(songData._id, "add");
+      if (songData._id) {
+        await storeRequestSender.updateSongStats(songData._id, "add");
+      }
+
       store.loadSongCatalog();
     }
   };
@@ -717,9 +729,22 @@ function GlobalStoreContextProvider(props) {
       type: GlobalStoreActionType.EDIT_SONG,
       payload: {
         currentSongIndex: null,
-        currentSong: { title: "", artist: "", year: "", youTubeId: "" },
+        currentSong: {
+          title: "Untitled",
+          artist: "?",
+          year: new Date().getFullYear(),
+          youTubeId: "dQw4w9WgXcQ",
+        },
       },
     });
+  };
+
+  store.submitNewSong = async function (songData) {
+    const response = await storeRequestSender.createCatalogSong(songData);
+    if (response.status === 201) {
+      store.loadSongCatalog();
+      store.hideModals();
+    }
   };
 
   store.hideModals = () => {
@@ -807,14 +832,7 @@ function GlobalStoreContextProvider(props) {
   };
 
   store.addNewSong = function () {
-    let index = this.getPlaylistSize();
-    this.addCreateSongTransaction(
-      index,
-      "Untitled",
-      "?",
-      new Date().getFullYear(),
-      "dQw4w9WgXcQ"
-    );
+    history.push("/songs/");
   };
 
   store.createSong = function (index, song) {
@@ -856,16 +874,7 @@ function GlobalStoreContextProvider(props) {
     song.youTubeId = songData.youTubeId;
     store.updateCurrentList();
   };
-  store.addNewSong = () => {
-    let playlistSize = store.getPlaylistSize();
-    store.addCreateSongTransaction(
-      playlistSize,
-      "Untitled",
-      "?",
-      new Date().getFullYear(),
-      "dQw4w9WgXcQ"
-    );
-  };
+
   // THIS FUNCDTION ADDS A CreateSong_Transaction TO THE TRANSACTION STACK
   store.addCreateSongTransaction = (index, title, artist, year, youTubeId) => {
     // ADD A SONG ITEM AND ITS NUMBER

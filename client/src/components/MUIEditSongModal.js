@@ -48,17 +48,21 @@ export default function MUIEditSongModal() {
       year: parseInt(year),
       youTubeId: youTubeId,
     };
-    store.updateCatalogSong(
-      store.currentSong._id,
-      newSongData,
-      store.currentSong.youTubeId
-    );
+
+    if (store.currentSong._id) {
+      store.updateCatalogSong(
+        store.currentSong._id,
+        newSongData,
+        store.currentSong.youTubeId
+      );
+    } else {
+      store.createCatalogSong(newSongData);
+    }
   }
 
   function handleCancelEditSong() {
     store.hideModals();
   }
-
 
   const endAdornment = (setValue) => (
     <InputAdornment position="end">
