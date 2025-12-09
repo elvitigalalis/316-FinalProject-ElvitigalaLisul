@@ -34,7 +34,6 @@ const SongsScreen = () => {
   const [searchActive, setSearchActive] = useState(false);
   const [player, setPlayer] = useState(null);
 
-  // initial load
   useEffect(() => {
     store.loadSongCatalog();
     store.loadUserPlaylists();
@@ -114,11 +113,29 @@ const SongsScreen = () => {
   let sortedSongs = [];
   if (store.songCatalog) {
     sortedSongs = [...store.songCatalog];
-    if (!searchActive && auth.user) {
-      sortedSongs = sortedSongs.filter(
-        (song) => song.ownerEmail === auth.user.email
-      );
+
+    if (searchActive) {
+      sortedSongs = sortedSongs.filter((song) => {
+        const titleMatch = song.title
+          .toLowerCase()
+          .includes(filters.title.toLowerCase());
+        const artistMatch = song.artist
+          .toLowerCase()
+          .includes(filters.artist.toLowerCase());
+        const yearMatch =
+          filters.year === "" || song.year.toString().includes(filters.year);
+        return titleMatch && artistMatch && yearMatch;
+      });
+    } else {
+      if (isGuest) {
+        sortedSongs = [];
+      } else if (auth.user) {
+        sortedSongs = sortedSongs.filter(
+          (song) => song.ownerEmail === auth.user.email
+        );
+      }
     }
+
     switch (sortLabel) {
       case "Listens (Hi-Lo)":
         sortedSongs.sort((a, b) => (b.listens || 0) - (a.listens || 0));
@@ -158,7 +175,6 @@ const SongsScreen = () => {
         break;
     }
   }
-  const isGuest = auth.user && auth.user.email === "GUEST@GUEST.com";
 
   const sortMenu = (
     <Menu anchorEl={anchorEl} open={isMenuOpen} onClose={handleSortClose}>

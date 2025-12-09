@@ -49,6 +49,7 @@ function SongCatalogSongCard({ song, handlePlaySong: loadVideo }) {
   };
 
   const canEdit = auth.user && auth.user.email === song.ownerEmail;
+  const isGuest = auth.user && auth.user.email === "GUEST@GUEST.com";
 
   return (
     <Card
@@ -82,15 +83,21 @@ function SongCatalogSongCard({ song, handlePlaySong: loadVideo }) {
         </Typography>
       </Box>
 
-      <IconButton
-        onClick={handleMenuOpen}
-        sx={{ position: "absolute", top: 8, right: 8 }}
-      >
-        <MoreVertIcon />
-      </IconButton>
+      {!isGuest && (
+        <IconButton
+          onClick={handleMenuOpen}
+          sx={{ position: "absolute", top: 8, right: 8 }}
+        >
+          <MoreVertIcon />
+        </IconButton>
+      )}
 
       <Menu anchorEl={anchorEl} open={isMenuOpen} onClose={handleMenuClose}>
-        <MenuItem onMouseEnter={handleSubMenuOpen}>Add to Playlist ▸</MenuItem>
+        {!isGuest && (
+          <MenuItem onMouseEnter={handleSubMenuOpen}>
+            Add to Playlist ▸
+          </MenuItem>
+        )}
         {canEdit && <MenuItem onClick={handleEditSong}>Edit Song</MenuItem>}
         {canEdit && (
           <MenuItem onClick={handleRemoveSong}>Remove from Catalog</MenuItem>
