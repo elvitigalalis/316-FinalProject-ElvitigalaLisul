@@ -22,6 +22,15 @@
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
     },
+     {
+      "type": "node",
+      "request": "launch",
+      "name": "Add Catalog Songs to Mongo",
+      "program": "${workspaceFolder}/server/test/data/mongo/addCatalogSongs.js",
+      "args": ["--runInBand"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
     {
       "type": "node",
       "request": "launch",
