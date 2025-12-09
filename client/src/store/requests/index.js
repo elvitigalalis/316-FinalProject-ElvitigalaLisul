@@ -64,6 +64,12 @@ export const updatePlaylistById = (id, playlist) => {
   });
 };
 export const getUserByEmail = (email) => request(`/user/${email}`, "GET");
+export const getUserByPlaylistId = (id) => request(`/user/byplaylist/${id}`, "GET");
+export const filterPlaylists = (filters) => {
+  console.log("sent filters:", filters);
+  const query = new URLSearchParams(filters).toString();
+  return request(`/playlists?${query}`, "GET");
+};
 
 const apis = {
   createPlaylist,
@@ -72,6 +78,8 @@ const apis = {
   getPlaylistPairs,
   updatePlaylistById,
   getUserByEmail,
+  getUserByPlaylistId,
+  filterPlaylists,
 };
 
 export default apis;

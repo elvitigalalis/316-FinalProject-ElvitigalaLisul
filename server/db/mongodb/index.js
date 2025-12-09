@@ -29,6 +29,10 @@ class MongoDatabaseManager extends DatabaseManager {
     return await User.findOne({ email }).exec();
   }
 
+  async getUsersByEmails(emails) {
+    return await User.find({ email: { $in: emails } }).exec();
+  }
+
   async getUserById(id) {
     return await User.findById(id).exec();
   }
@@ -50,6 +54,14 @@ class MongoDatabaseManager extends DatabaseManager {
     return await Playlist.find({ ownerEmail: email }).exec();
   }
 
+  async getUserByPlaylistId(playlistId) {
+    const playlist = await Playlist.findById(playlistId).exec();
+    if (playlist) {
+      return await User.findOne({ email: playlist.ownerEmail }).exec();
+    }
+    return null;
+  }
+
   async updatePlaylist(id, data) {
     return await Playlist.findByIdAndUpdate(id, data, { new: true }).exec();
   }
@@ -68,8 +80,38 @@ class MongoDatabaseManager extends DatabaseManager {
     return playlist;
   }
 
-  async getAllPlaylists() {
-    return await Playlist.find({}).exec();
+  async getAllPlaylists(filters = {}) {
+    console.log("Filters received:", filters);
+    const { name, user, song, artist, year } = filters;
+    let criteria = {};
+
+    if (name) {
+      criteria.name = { $regex: name, $options: "i" };
+    }
+
+    if (user) {
+      const users = await User.find({
+        username: { $regex: user, $options: "i" },
+      }).exec();
+      const userEmails = users.map((u) => u.email);
+      criteria.ownerEmail = { $in: userEmails };
+    }
+
+    if (song || artist || year) {
+      let songCriteria = {};
+      if (song) songCriteria.title = { $regex: song, $options: "i" };
+      if (artist) songCriteria.artist = { $regex: artist, $options: "i" };
+      if (year) {
+        if (!isNaN(year)) {
+          songCriteria.year = Number(year);
+        } else {
+          songCriteria.year = { $regex: year, $options: "i" };
+        }
+      }
+      criteria.songs = { $elemMatch: songCriteria };
+    }
+
+    return await Playlist.find(criteria).exec();
   }
 }
 

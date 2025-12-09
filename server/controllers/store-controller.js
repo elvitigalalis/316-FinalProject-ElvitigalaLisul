@@ -90,12 +90,13 @@ deletePlaylist = async (req, res) => {
     });
   }
 };
+
 getPlaylistById = async (req, res) => {
-  if (auth.verifyUser(req) === null) {
-    return res.status(400).json({
-      errorMessage: "UNAUTHORIZED",
-    });
-  }
+  // if (auth.verifyUser(req) === null) {
+  //   return res.status(400).json({
+  //     errorMessage: "UNAUTHORIZED",
+  //   });
+  // }
   console.log("Find Playlist with id: " + JSON.stringify(req.params.id));
 
   try {
@@ -107,19 +108,19 @@ getPlaylistById = async (req, res) => {
     }
     console.log("Found list: " + JSON.stringify(list));
 
-    const user = await db.getUserByEmail(list.ownerEmail);
-    console.log("user._id: " + user._id);
-    console.log("req.userId: " + req.userId);
+    // const user = await db.getUserByEmail(list.ownerEmail);
+    // console.log("user._id: " + user._id);
+    // console.log("req.userId: " + req.userId);
 
-    if (user._id == req.userId || user.id == req.userId) {
-      console.log("correct user!");
+    // if (user._id == req.userId || user.id == req.userId) {
+    //   console.log("correct user!");
       return res.status(200).json({ success: true, playlist: list });
-    } else {
-      console.log("incorrect user!");
-      return res
-        .status(400)
-        .json({ success: false, description: "authentication error" });
-    }
+    // } else {
+    //   console.log("incorrect user!");
+    //   return res
+    //     .status(400)
+    //     .json({ success: false, description: "authentication error" });
+    // }
   } catch (err) {
     console.error(err);
     return res.status(400).json({ success: false, error: err });
@@ -127,11 +128,11 @@ getPlaylistById = async (req, res) => {
 };
 getPlaylistPairs = async (req, res) => {
   //   console.log("getPlaylistPairs endpoint HIT");
-  if (auth.verifyUser(req) === null) {
-    return res.status(400).json({
-      errorMessage: "UNAUTHORIZED",
-    });
-  }
+  // if (auth.verifyUser(req) === null) {
+  //   return res.status(400).json({
+  //     errorMessage: "UNAUTHORIZED",
+  //   });
+  // }
   console.log("getPlaylistPairs");
   try {
     const user = await db.getUserById(req.userId);
@@ -155,6 +156,8 @@ getPlaylistPairs = async (req, res) => {
         let pair = {
           _id: list._id || list.id,
           name: list.name,
+          username: user.username,
+          listeners: list.listenerCount || 0,
         };
         pairs.push(pair);
       }
@@ -165,25 +168,50 @@ getPlaylistPairs = async (req, res) => {
     return res.status(400).json({ success: false, error: err });
   }
 };
+
 getPlaylists = async (req, res) => {
-  if (auth.verifyUser(req) === null) {
-    return res.status(400).json({
-      errorMessage: "UNAUTHORIZED",
-    });
-  }
+  // if (auth.verifyUser(req) === null) {
+  //   return res.status(400).json({
+  //     errorMessage: "UNAUTHORIZED",
+  //   });
+  // }
+  console.log("getplaylists called");
+  console.log("getPlaylists with filters: " + JSON.stringify(req.query));
+
   try {
-    const playlists = await db.getAllPlaylists();
+    const playlists = await db.getAllPlaylists(req.query);
+    console.log("found Playlists: " + JSON.stringify(playlists));
+
+    // no results = success
     if (!playlists.length) {
-      return res
-        .status(404)
-        .json({ success: false, error: `Playlists not found` });
+      return res.status(200).json({ success: true, idNamePairs: [] });
     }
-    return res.status(200).json({ success: true, data: playlists });
+
+    const ownerEmails = [...new Set(playlists.map((p) => p.ownerEmail))];
+    const owners = await db.getUsersByEmails(ownerEmails);
+    const emailToUsername = {};
+    owners.forEach((u) => {
+      emailToUsername[u.email] = u.username;
+    });
+
+    const idNamePairs = playlists.map((playlist) => {
+      return {
+        _id: playlist._id,
+        name: playlist.name,
+        ownerEmail: playlist.ownerEmail,
+        username: emailToUsername[playlist.ownerEmail] || "Unknown",
+        listeners: playlist.listenerCount || 0,
+        songs: playlist.songs,
+      };
+    });
+
+    return res.status(200).json({ success: true, idNamePairs: idNamePairs });
   } catch (err) {
     console.error(err);
     return res.status(400).json({ success: false, error: err });
   }
 };
+
 updatePlaylist = async (req, res) => {
   if (auth.verifyUser(req) === null) {
     return res.status(400).json({
@@ -244,10 +272,37 @@ getUserByEmail = async (req, res) => {
   try {
     const email = req.params.email;
     const user = await db.getUserByEmail(email);
-    
+
     if (!user) {
       return res.status(404).json({
         errorMessage: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      user: {
+        username: user.username,
+        email: user.email,
+        profilePicture: user.profilePicture,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      errorMessage: err,
+    });
+  }
+};
+
+getUserByPlaylistId = async (req, res) => {
+  try {
+    const playlistId = req.params.id;
+    const user = await db.getUserByPlaylistId(playlistId);
+
+    if (!user) {
+      return res.status(404).json({
+        errorMessage: "User not found for the given playlist ID",
       });
     }
 
@@ -275,4 +330,5 @@ module.exports = {
   getPlaylists,
   updatePlaylist,
   getUserByEmail,
+  getUserByPlaylistId,
 };

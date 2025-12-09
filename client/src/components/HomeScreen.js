@@ -61,14 +61,14 @@ const HomeScreen = () => {
     setSortLabel(sortOption);
     handleSortClose();
     console.log("Sorting by: ", sortOption);
-    // store.sortPlaylists(sortOption);
+    store.sortPlaylists(sortOption);
   };
 
   const handleFilterChange = (prop) => (event) => {
     setFilters({ ...filters, [prop]: event.target.value });
   };
 
-  const handleClearField = (prop) => (event) => {
+  const handleClearField = (prop) => {
     setFilters({ ...filters, [prop]: "" });
   };
 
@@ -80,11 +80,18 @@ const HomeScreen = () => {
       artist: "",
       year: "",
     });
+    store.loadIdNamePairs();
   };
 
   const handleSearch = () => {
     console.log("searching with filters: ", filters);
-    // store.filterPlaylists(filters);
+    store.filterPlaylists(filters);
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
   };
 
   const sortMenu = (
@@ -123,6 +130,15 @@ const HomeScreen = () => {
     </Menu>
   );
 
+  // Helper mapping for display labels
+  const labelMap = {
+    name: "Playlist Name",
+    user: "User Name",
+    song: "Song Title",
+    artist: "Song Artist",
+    year: "Song Year",
+  };
+
   return (
     <Box sx={{ flexGrow: 1, height: "85vh", overflow: "hidden" }}>
       <Grid container sx={{ height: "100%" }}>
@@ -144,17 +160,17 @@ const HomeScreen = () => {
           </Typography>
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {/* CHANGED: Iterate over correct keys */}
             {["name", "user", "song", "artist", "year"].map((key) => (
               <TextField
                 key={key}
-                label={`Filter by ${
-                  key.charAt(0).toUpperCase() + key.slice(1)
-                }`}
+                label={`Filter by ${labelMap[key]}`}
                 variant="outlined"
                 size="small"
                 fullWidth
                 value={filters[key]}
                 onChange={handleFilterChange(key)}
+                onKeyDown={handleKeyPress}
                 InputProps={{
                   endAdornment: filters[key] && (
                     <IconButton

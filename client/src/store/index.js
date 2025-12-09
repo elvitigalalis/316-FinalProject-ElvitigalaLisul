@@ -430,6 +430,66 @@ function GlobalStoreContextProvider(props) {
     console.log("editPlaylist for " + id);
   };
 
+  store.sortPlaylists = function (sortType) {
+    if (!store.idNamePairs) return;
+
+    let sortedList = [...store.idNamePairs];
+    switch (sortType) {
+      case "Name (A-Z)":
+        sortedList.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "Name (Z-A)":
+        sortedList.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case "User (A-Z)":
+        sortedList.sort((a, b) =>
+          (a.username || "").localeCompare(b.username || "")
+        );
+        break;
+      case "User (Z-A)":
+        sortedList.sort((a, b) => {
+          console.log("Comparing " + b.username + " and " + a.username);
+          return (b.username || "").localeCompare(a.username || "");
+        }
+        );
+        break;
+      case "Listeners (Hi-Lo)":
+        sortedList.sort((a, b) => {
+          console.log("Comparing " + b.listeners + " and " + a.listeners);
+          return (b.listeners || 0) - (a.listeners || 0);
+        });
+        break;
+      case "Listeners (Lo-Hi)":
+        sortedList.sort((a, b) => (a.listeners || 0) - (b.listeners || 0));
+        break;
+      default:
+        break;
+    }
+
+    // Dispatch updated list to view
+    storeReducer({
+      type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+      payload: sortedList,
+    });
+  };
+
+  store.filterPlaylists = async function (filters) {
+    console.log("Filters to apply:", filters);
+    const isEmpty = Object.values(filters).every((x) => x === null || x === "");
+    if (isEmpty) {
+      store.loadIdNamePairs();
+      return;
+    }
+
+    const response = await storeRequestSender.filterPlaylists(filters);
+    if (response.data.success) {
+      storeReducer({
+        type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+        payload: response.data.idNamePairs,
+      });
+    }
+  };
+
   // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION
   // OF A LIST, WHICH INCLUDES USING A VERIFICATION MODAL. THE
   // FUNCTIONS ARE markListForDeletion, deleteList, deleteMarkedList,
@@ -541,6 +601,18 @@ function GlobalStoreContextProvider(props) {
       }
     } catch (error) {
       console.error("Store getUserByEmail error:", error);
+    }
+    return null;
+  };
+
+  store.getUserByPlaylistId = async function (playlistId) {
+    try {
+      let response = await storeRequestSender.getUserByPlaylistId(playlistId);
+      if (response.data.success) {
+        return response.data.user;
+      }
+    } catch (error) {
+      console.error("Store getUserByPlaylistId error:", error);
     }
     return null;
   };
