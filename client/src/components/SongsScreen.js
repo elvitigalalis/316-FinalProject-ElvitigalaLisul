@@ -16,6 +16,7 @@ import Fab from "@mui/material/Fab";
 import List from "@mui/material/List";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import MUIDeleteSongModal from "./MUIDeleteSongModal";
 
 const SongsScreen = () => {
   const { store } = useContext(GlobalStoreContext);
@@ -287,6 +288,7 @@ const SongsScreen = () => {
 
       {/* modals */}
       <MUIEditSongModal />
+      <MUIDeleteSongModal />
     </Box>
   );
 };

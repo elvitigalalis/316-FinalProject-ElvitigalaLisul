@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, memo } from "react";
 import { GlobalStoreContext } from "../store";
 import AuthContext from "../auth";
 import Box from "@mui/material/Box";
@@ -28,17 +28,16 @@ function SongCatalogSongCard({ song }) {
   const handleSubMenuClose = () => setSubMenuEl(null);
 
   const handlePlaySong = () => {
-    // Implement play logic for the sidebar player if needed
     console.log("Play song in sidebar:", song.title);
   };
 
   const handleEditSong = () => {
-    store.showEditSongModal(null, song); // Assuming showEditSongModal handles catalog songs differently or same
+    store.showEditSongModal(null, song);
     handleMenuClose();
   };
 
   const handleRemoveSong = () => {
-    store.markSongForRemoval(song._id); // You need to implement this in store
+    store.markSongForRemoval(song);
     handleMenuClose();
   };
 
@@ -47,7 +46,6 @@ function SongCatalogSongCard({ song }) {
     handleMenuClose();
   };
 
-  // Only the creator can Edit/Remove
   const canEdit = auth.user && auth.user.email === song.ownerEmail;
 
   return (
@@ -62,7 +60,6 @@ function SongCatalogSongCard({ song }) {
         position: "relative",
       }}
     >
-      {/* Primary Info */}
       <Box sx={{ pr: 4 }}>
         <Typography
           variant="h6"
@@ -74,7 +71,6 @@ function SongCatalogSongCard({ song }) {
         </Typography>
       </Box>
 
-      {/* Metrics */}
       <Box sx={{ display: "flex", gap: 4, mt: 1 }}>
         <Typography variant="body2" color="text.secondary">
           Listens: {song.listens || 0}
@@ -84,7 +80,6 @@ function SongCatalogSongCard({ song }) {
         </Typography>
       </Box>
 
-      {/* Context Menu Trigger */}
       <IconButton
         onClick={handleMenuOpen}
         sx={{ position: "absolute", top: 8, right: 8 }}
@@ -92,7 +87,6 @@ function SongCatalogSongCard({ song }) {
         <MoreVertIcon />
       </IconButton>
 
-      {/* Main Menu */}
       <Menu anchorEl={anchorEl} open={isMenuOpen} onClose={handleMenuClose}>
         <MenuItem onMouseEnter={handleSubMenuOpen}>Add to Playlist ▸</MenuItem>
         {canEdit && <MenuItem onClick={handleEditSong}>Edit Song</MenuItem>}
@@ -101,7 +95,6 @@ function SongCatalogSongCard({ song }) {
         )}
       </Menu>
 
-      {/* Sub Menu (Playlists) */}
       <Menu
         anchorEl={subMenuEl}
         open={isSubMenuOpen}
@@ -128,4 +121,4 @@ function SongCatalogSongCard({ song }) {
   );
 }
 
-export default SongCatalogSongCard;
+export default memo(SongCatalogSongCard);
