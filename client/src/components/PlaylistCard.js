@@ -55,8 +55,9 @@ function PlaylistCard(props) {
         } else {
           console.log("Fetching user for: " + ownerEmail);
           try {
+            console.log("owner email:", ownerEmail);
             const user = await store.getUserByEmail(ownerEmail);
-            // console.log("Fetched user data:", user.data.user);
+            console.log("Fetched user data:", user);
             setUserInfo(user);
           } catch (error) {
             console.error("Error fetching user:", error);

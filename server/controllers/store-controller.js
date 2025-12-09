@@ -272,14 +272,16 @@ getUserByEmail = async (req, res) => {
   try {
     const email = req.params.email;
     const user = await db.getUserByEmail(email);
-
+    console.log("db user1234: ", user);
     if (!user) {
       return res.status(404).json({
         errorMessage: "User not found",
       });
     }
 
+    console.log("user found: " + JSON.stringify(user));
     return res.status(200).json({
+      success: true,
       user: {
         username: user.username,
         email: user.email,
@@ -307,6 +309,7 @@ getUserByPlaylistId = async (req, res) => {
     }
 
     return res.status(200).json({
+      success: true,
       user: {
         username: user.username,
         email: user.email,

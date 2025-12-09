@@ -597,6 +597,7 @@ function GlobalStoreContextProvider(props) {
     try {
       let response = await storeRequestSender.getUserByEmail(email);
       if (response.data.success) {
+        console.log("Store getUserByEmail response:", response.data);
         return response.data.user;
       }
     } catch (error) {
