@@ -438,7 +438,29 @@ function GlobalStoreContextProvider(props) {
       };
       playlist.songs.push(newSong);
       await storeRequestSender.updatePlaylistById(playlistId, playlist);
+
+      await storeRequestSender.updateSongStats(songData._id, "add");
+      store.loadSongCatalog();
     }
+  };
+
+  store.loadUserPlaylists = async function () {
+    const response = await storeRequestSender.getPlaylistPairs();
+    if (response.data.success) {
+      storeReducer({
+        type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+        payload: {
+          pairs: response.data.idNamePairs,
+          filters: store.currentFilters,
+          sort: store.currentSort,
+        },
+      });
+    }
+  };
+
+  store.incrementListen = async function (songId) {
+    await storeRequestSender.updateSongStats(songId, "listen");
+    store.loadSongCatalog();
   };
 
   store.createCatalogSong = async function (songData) {

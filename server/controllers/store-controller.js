@@ -1,6 +1,5 @@
 const db = require("../db");
 const auth = require("../auth");
-const { updateCatalogSong } = require("../../client/src/store/requests");
 /*
     This is our back-end API. It provides all the data services
     our database needs. Note that this file contains the controller
@@ -449,6 +448,26 @@ deleteSong = async (req, res) => {
   }
 };
 
+updateSongStats = async (req, res) => {
+  try {
+    const { action } = req.body;
+    let updatedSong = null;
+
+    if (action === "listen") {
+      updatedSong = await db.incrementSongListenCount(req.params.id);
+    } else if (action === "add") {
+      updatedSong = await db.updateSongPlaylistCount(req.params.id, 1);
+    } else if (action === "remove") {
+      updatedSong = await db.updateSongPlaylistCount(req.params.id, -1);
+    }
+
+    return res.status(200).json({ success: true, song: updatedSong });
+  } catch (err) {
+    console.error(err);
+    return res.status(400).json({ success: false, error: err });
+  }
+};
+
 module.exports = {
   createPlaylist,
   deletePlaylist,
@@ -462,4 +481,5 @@ module.exports = {
   createSong,
   updateSong,
   deleteSong,
+  updateSongStats,
 };

@@ -86,12 +86,16 @@ export const editUser = (
   });
 };
 
+export const updateSongStats = (id, action) =>
+  request(`/songs/${id}/stats`, "PUT", { action });
+
 const apis = {
   getLoggedIn,
   registerUser,
   loginUser,
   logoutUser,
   editUser,
+  updateSongStats
 };
 
 export default apis;

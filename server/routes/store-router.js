@@ -25,5 +25,6 @@ router.get("/songs", StoreController.getSongs);
 router.post("/songs", auth.verify, StoreController.createSong);
 router.put("/songs/:id", auth.verify, StoreController.updateSong);
 router.delete("/songs/:id", auth.verify, StoreController.deleteSong);
+router.put("/songs/:id/stats", StoreController.updateSongStats);
 
 module.exports = router;

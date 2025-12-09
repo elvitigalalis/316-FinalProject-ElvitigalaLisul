@@ -36,6 +36,7 @@ const SongsScreen = () => {
   // initial load
   useEffect(() => {
     store.loadSongCatalog();
+    store.loadUserPlaylists();
   }, []);
 
   const handleFilterChange = (prop) => (event) => {

@@ -29,6 +29,7 @@ function SongCatalogSongCard({ song }) {
 
   const handlePlaySong = () => {
     console.log("Play song in sidebar:", song.title);
+    store.incrementListen(song._id);
   };
 
   const handleEditSong = () => {

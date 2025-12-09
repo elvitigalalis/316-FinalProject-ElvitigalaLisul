@@ -83,6 +83,8 @@ export const updateCatalogSong = (id, songData) =>
   request(`/songs/${id}`, "PUT", songData);
 
 export const deleteCatalogSong = (id) => request(`/songs/${id}`, "DELETE");
+export const updateSongStats = (id, action) =>
+  request(`/songs/${id}/stats`, "PUT", { action });
 
 const apis = {
   createPlaylist,
@@ -98,6 +100,7 @@ const apis = {
   createCatalogSong,
   updateCatalogSong,
   deleteCatalogSong,
+  updateSongStats,
 };
 
 export default apis;

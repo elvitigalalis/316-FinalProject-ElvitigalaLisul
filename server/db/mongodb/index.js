@@ -167,6 +167,24 @@ class MongoDatabaseManager extends DatabaseManager {
       { $pull: { songs: { youTubeId: youTubeId } } }
     ).exec();
   }
+
+  async incrementSongListenCount(id) {
+    const Song = require("../../models/song-model");
+    return await Song.findByIdAndUpdate(
+      id,
+      { $inc: { listens: 1 } },
+      { new: true }
+    ).exec();
+  }
+
+  async updateSongPlaylistCount(id, amount) {
+    const Song = require("../../models/song-model");
+    return await Song.findByIdAndUpdate(
+      id,
+      { $inc: { playlistCount: amount } },
+      { new: true }
+    ).exec();
+  }
 }
 
 module.exports = MongoDatabaseManager;
