@@ -168,11 +168,10 @@ class MongoDatabaseManager extends DatabaseManager {
     ).exec();
   }
 
-  async incrementSongListenCount(id) {
-    const Song = require("../../models/song-model");
+  async updateSongPlaylistCount(id, amount) {
     return await Song.findByIdAndUpdate(
       id,
-      { $inc: { listens: 1 } },
+      { $inc: { playlistCount: amount } },
       { new: true }
     ).exec();
   }

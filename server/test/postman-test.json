@@ -1,0 +1,433 @@
+{
+  "info": {
+    "_postman_id": "c616896b-02af-406c-9304-620245228543",
+    "name": "Playlister Tests (Manual IDs)",
+    "description": "Comprehensive test suite for Playlister MERN Stack.\n\nNOTE: Scripts are disabled. You must manually copy IDs from 'Create' responses and paste them into 'Update/Delete' URLs.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"TestUser\",\n    \"email\": \"test@1.com\",\n    \"password\": \"aaaaaaaa\",\n    \"passwordVerify\": \"aaaaaaaa\",\n    \"profilePicture\": \"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/auth/register",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"test@1.com\",\n    \"password\": \"aaaaaaaa\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Logged In User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/auth/loggedIn",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["auth", "loggedIn"]
+            }
+          }
+        },
+        {
+          "name": "Logout User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/auth/logout",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Song Catalog",
+      "item": [
+        {
+          "name": "Create Song (Unauthorized Check)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Illegal Song\",\n    \"artist\": \"Hacker\",\n    \"year\": 2024,\n    \"youTubeId\": \"dQw4w9WgXcQ\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/songs",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "songs"]
+            }
+          }
+        },
+        {
+          "name": "Login (Prepare)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"test@1.com\",\n    \"password\": \"aaaaaaaa\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Create Song",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Postman Song\",\n    \"artist\": \"The APIs\",\n    \"year\": 2024,\n    \"youTubeId\": \"dQw4w9WgXcQ\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/songs",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "songs"]
+            }
+          }
+        },
+        {
+          "name": "Create Duplicate Song (Fail)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Postman Song\",\n    \"artist\": \"The APIs\",\n    \"year\": 2024,\n    \"youTubeId\": \"dQw4w9WgXcQ\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/songs",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "songs"]
+            }
+          }
+        },
+        {
+          "name": "Get Songs (Search)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/songs?title=Postman",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "songs"],
+              "query": [
+                {
+                  "key": "title",
+                  "value": "Postman"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Song Stats",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"action\": \"listen\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/songs/PASTE_SONG_ID_HERE/stats",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "songs", "PASTE_SONG_ID_HERE", "stats"]
+            }
+          }
+        },
+        {
+          "name": "Update Song Metadata",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Postman Song Revised\",\n    \"artist\": \"The APIs\",\n    \"year\": 2024,\n    \"youTubeId\": \"dQw4w9WgXcQ\",\n    \"originalYouTubeId\": \"dQw4w9WgXcQ\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/songs/PASTE_SONG_ID_HERE",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "songs", "PASTE_SONG_ID_HERE"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Playlists",
+      "item": [
+        {
+          "name": "Create Playlist",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Postman Playlist\",\n    \"songs\": []\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/playlist",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "playlist"]
+            }
+          }
+        },
+        {
+          "name": "Get Playlist Pairs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/playlistpairs",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "playlistpairs"]
+            }
+          }
+        },
+        {
+          "name": "Get Playlist By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/playlist/PASTE_PLAYLIST_ID_HERE",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "playlist", "PASTE_PLAYLIST_ID_HERE"]
+            }
+          }
+        },
+        {
+          "name": "Update Playlist",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"playlist\": {\n        \"name\": \"Postman Playlist Updated\",\n        \"songs\": [\n            {\n                \"title\": \"Added Song\",\n                \"artist\": \"Tester\",\n                \"year\": 2022,\n                \"youTubeId\": \"123\"\n            }\n        ]\n    }\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/playlist/PASTE_PLAYLIST_ID_HERE",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "playlist", "PASTE_PLAYLIST_ID_HERE"]
+            }
+          }
+        },
+        {
+          "name": "Delete Playlist",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/playlist/PASTE_PLAYLIST_ID_HERE",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "playlist", "PASTE_PLAYLIST_ID_HERE"]
+            }
+          }
+        },
+        {
+          "name": "Delete Song From Catalog",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:4000/api/songs/PASTE_SONG_ID_HERE",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "songs", "PASTE_SONG_ID_HERE"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Guest Security",
+      "item": [
+        {
+          "name": "Login as Guest",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"GUEST@GUEST.com\",\n    \"password\": \"aaaaaaaa\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Guest Create Playlist (Fail)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Illegal Guest Playlist\",\n    \"songs\": []\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/playlist",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "playlist"]
+            }
+          }
+        },
+        {
+          "name": "Guest Create Song (Fail)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Guest Song\",\n    \"artist\": \"Guest\",\n    \"year\": 2024,\n    \"youTubeId\": \"123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:4000/api/songs",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "4000",
+              "path": ["api", "songs"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
