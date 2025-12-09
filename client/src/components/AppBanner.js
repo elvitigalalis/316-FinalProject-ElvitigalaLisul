@@ -36,9 +36,16 @@ export default function AppBanner() {
     auth.logoutUser();
   };
 
+  const handleGuestLogout = () => {
+    handleMenuClose();
+    auth.logoutUser();
+  };
+
   const handleHouseClick = () => {
     store.closeCurrentList();
   };
+
+  const isGuest = auth.user && auth.user.email === "GUEST@GUEST.com";
 
   const menuId = "primary-search-account-menu";
   const loggedOutMenu = (
@@ -65,6 +72,33 @@ export default function AppBanner() {
       </MenuItem>
     </Menu>
   );
+
+  const guestMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={handleGuestLogout}>
+        <Link to="/login/">Login</Link>
+      </MenuItem>
+      <MenuItem onClick={handleGuestLogout}>
+        <Link to="/register/">Create Account</Link>
+      </MenuItem>
+      <MenuItem onClick={handleLogout}>Logout</MenuItem>
+    </Menu>
+  );
+
   const loggedInMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -91,7 +125,7 @@ export default function AppBanner() {
   let editToolbar = "";
   let menu = loggedOutMenu;
   if (auth.loggedIn) {
-    menu = loggedInMenu;
+    menu = isGuest ? guestMenu : loggedInMenu;
     if (store.currentList) {
       editToolbar = <EditToolbar />;
     }

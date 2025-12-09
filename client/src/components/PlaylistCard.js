@@ -94,6 +94,7 @@ function PlaylistCard(props) {
   }
 
   const isOwner = auth.user && pData.ownerEmail === auth.user.email;
+  const isGuest = auth.user && auth.user.email === "GUEST@GUEST.com";
 
   function handleToggleExpand() {
     setIsExpanded(!isExpanded);
@@ -227,9 +228,11 @@ function PlaylistCard(props) {
             </>
           )}
 
-          <Button onClick={handleDuplicate} variant="outlined" size="small">
-            Copy
-          </Button>
+          {!isGuest && (
+            <Button onClick={handleDuplicate} variant="outlined" size="small">
+              Copy
+            </Button>
+          )}
           <Button
             onClick={handlePlay}
             variant="contained"
