@@ -96,6 +96,11 @@ export default function MUIPlayPlaylistModal() {
     if (store.currentModal === "PLAY_PLAYLIST" && playlist) {
       setCurrentSongIndex(0);
       setIsPlaying(true);
+      
+      // increment listen count for first song
+      if (playlist.songs && playlist.songs.length > 0) {
+        store.incrementListen(playlist.songs[0].youTubeId);
+      }
 
       if (!window.YT) {
         const tag = document.createElement("script");
@@ -178,6 +183,7 @@ export default function MUIPlayPlaylistModal() {
       player.loadVideoById(videoId);
       setCurrentSongIndex(index);
       setIsPlaying(true);
+      store.incrementListen(videoId);
     }
   }
 

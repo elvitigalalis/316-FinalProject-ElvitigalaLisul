@@ -177,11 +177,21 @@ class MongoDatabaseManager extends DatabaseManager {
     ).exec();
   }
 
-  async updateSongPlaylistCount(id, amount) {
+  async incrementSongListenCount(identifier) {
     const Song = require("../../models/song-model");
-    return await Song.findByIdAndUpdate(
-      id,
-      { $inc: { playlistCount: amount } },
+    const mongoose = require("mongoose");
+
+    let query = {};
+    // if valid MongoDB ID, otherwise we assume YouTube ID
+    if (mongoose.Types.ObjectId.isValid(identifier)) {
+      query = { _id: identifier };
+    } else {
+      query = { youTubeId: identifier };
+    }
+
+    return await Song.findOneAndUpdate(
+      query,
+      { $inc: { listens: 1 } },
       { new: true }
     ).exec();
   }
