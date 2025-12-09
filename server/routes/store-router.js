@@ -16,6 +16,12 @@ router.get("/playlistpairs", auth.verify, StoreController.getPlaylistPairs);
 router.get("/playlists", auth.verify, StoreController.getPlaylists);
 router.put("/playlist/:id", auth.verify, StoreController.updatePlaylist);
 router.get("/user/:email", auth.verify, StoreController.getUserByEmail);
-router.get("/user/byplaylist/:id", auth.verify, StoreController.getUserByPlaylistId);
+router.get(
+  "/user/byplaylist/:id",
+  auth.verify,
+  StoreController.getUserByPlaylistId
+);
+router.get("/songs", StoreController.getSongs);
+router.post("/songs", auth.verify, StoreController.createSong);
 
 module.exports = router;

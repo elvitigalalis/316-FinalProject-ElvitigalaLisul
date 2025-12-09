@@ -114,7 +114,7 @@ getPlaylistById = async (req, res) => {
 
     // if (user._id == req.userId || user.id == req.userId) {
     //   console.log("correct user!");
-      return res.status(200).json({ success: true, playlist: list });
+    return res.status(200).json({ success: true, playlist: list });
     // } else {
     //   console.log("incorrect user!");
     //   return res
@@ -212,6 +212,46 @@ getPlaylists = async (req, res) => {
   }
 };
 
+getSongs = async (req, res) => {
+  try {
+    const songs = await db.getSongs(req.query);
+    return res.status(200).json({ success: true, songs: songs });
+  } catch (err) {
+    console.error(err);
+    return res.status(400).json({ success: false, error: err });
+  }
+};
+
+createSong = async (req, res) => {
+  if (auth.verifyUser(req) === null) {
+    return res.status(400).json({ errorMessage: "UNAUTHORIZED" });
+  }
+  const body = req.body;
+  if (!body) {
+    return res
+      .status(400)
+      .json({ success: false, error: "You must provide a song" });
+  }
+
+  try {
+    const user = await db.getUserById(req.userId);
+    if (!user) return res.status(400).json({ errorMessage: "User not found" });
+
+    const song = await db.createCatalogSong({
+      title: body.title,
+      artist: body.artist,
+      year: body.year,
+      youTubeId: body.youTubeId,
+      ownerEmail: user.email,
+    });
+
+    return res.status(201).json({ success: true, song: song });
+  } catch (err) {
+    console.error(err);
+    return res.status(400).json({ success: false, error: err });
+  }
+};
+
 updatePlaylist = async (req, res) => {
   // if (auth.verifyUser(req) === null) {
   //   return res.status(400).json({
@@ -243,21 +283,21 @@ updatePlaylist = async (req, res) => {
     console.log("req.userId: " + req.userId);
 
     // if (user._id == req.userId || user.id == req.userId) {
-      console.log("correct user!");
-      console.log("req.body.name: " + req.body.name);
+    console.log("correct user!");
+    console.log("req.body.name: " + req.body.name);
 
-      await db.updatePlaylist(req.params.id, body.playlist);
-      console.log("SUCCESS!!!");
-      return res.status(200).json({
-        success: true,
-        id: req.params.id,
-        message: "Playlist updated!",
-      });
+    await db.updatePlaylist(req.params.id, body.playlist);
+    console.log("SUCCESS!!!");
+    return res.status(200).json({
+      success: true,
+      id: req.params.id,
+      message: "Playlist updated!",
+    });
     // } else {
-      // console.log("incorrect user!");
-      // return res
-        // .status(400)
-        // .json({ success: false, description: "authentication error" });
+    // console.log("incorrect user!");
+    // return res
+    // .status(400)
+    // .json({ success: false, description: "authentication error" });
     // }
   } catch (error) {
     console.log("FAILURE: " + JSON.stringify(error));
@@ -334,4 +374,6 @@ module.exports = {
   updatePlaylist,
   getUserByEmail,
   getUserByPlaylistId,
+  getSongs,
+  createSong,
 };

@@ -35,6 +35,8 @@ export const GlobalStoreActionType = {
   HIDE_MODALS: "HIDE_MODALS",
   PLAY_PLAYLIST: "PLAY_PLAYLIST",
   EDIT_PLAYLIST: "EDIT_PLAYLIST",
+  LOAD_SONG_CATALOG: "LOAD_SONG_CATALOG",
+  CREATE_CATALOG_SONG: "CREATE_CATALOG_SONG",
 };
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -63,6 +65,7 @@ function GlobalStoreContextProvider(props) {
     listNameActive: false,
     listIdMarkedForDeletion: null,
     listMarkedForDeletion: null,
+    songCatalog: [],
   });
   const history = useHistory();
 
@@ -247,6 +250,12 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
         });
       }
+      case GlobalStoreActionType.LOAD_SONG_CATALOG: {
+        return setStore({
+          ...store, // Copy existing state
+          songCatalog: payload,
+        });
+      }
       default:
         return store;
     }
@@ -383,6 +392,48 @@ function GlobalStoreContextProvider(props) {
     asyncDuplicatePlaylist(id);
   };
 
+  store.loadSongCatalog = async function () {
+    const response = await storeRequestSender.getSongs();
+    if (response.data.success) {
+      storeReducer({
+        type: GlobalStoreActionType.LOAD_SONG_CATALOG,
+        payload: response.data.songs,
+      });
+    }
+  };
+
+  store.searchSongs = async function (filters) {
+    const response = await storeRequestSender.searchSongs(filters);
+    if (response.data.success) {
+      storeReducer({
+        type: GlobalStoreActionType.LOAD_SONG_CATALOG,
+        payload: response.data.songs,
+      });
+    }
+  };
+
+  store.addSongToPlaylist = async function (playlistId, songData) {
+    let response = await storeRequestSender.getPlaylistById(playlistId);
+    if (response.data.success) {
+      let playlist = response.data.playlist;
+      let newSong = {
+        title: songData.title,
+        artist: songData.artist,
+        year: songData.year,
+        youTubeId: songData.youTubeId,
+      };
+      playlist.songs.push(newSong);
+      await storeRequestSender.updatePlaylistById(playlistId, playlist);
+    }
+  };
+
+  store.createCatalogSong = async function (songData) {
+    const response = await storeRequestSender.createCatalogSong(songData);
+    if (response.status === 201) {
+      store.loadSongCatalog();
+    }
+  };
+
   store.playPlaylist = function (id) {
     console.log("playPlaylist for " + id);
     async function asyncPlayPlaylist(id) {
@@ -453,8 +504,7 @@ function GlobalStoreContextProvider(props) {
         sortedList.sort((a, b) => {
           console.log("Comparing " + b.username + " and " + a.username);
           return (b.username || "").localeCompare(a.username || "");
-        }
-        );
+        });
         break;
       case "Listeners (Hi-Lo)":
         sortedList.sort((a, b) => {

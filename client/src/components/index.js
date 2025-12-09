@@ -14,11 +14,14 @@ import SongCard from "./SongCard";
 import SplashScreen from "./SplashScreen";
 import Statusbar from "./Statusbar";
 import WorkspaceScreen from "./WorkspaceScreen";
+import SongsScreen from "./SongsScreen";
+import SongCatalogSongCard from "./SongCatalogSongCard";
 /*
     This serves as a module so that we can import
     all the other components as we wish.
     
     @author McKilla Gorilla
+    @author elvitigalalis
 */
 export {
   AppBanner,
@@ -31,6 +34,8 @@ export {
   MUIEditSongModal,
   MUIErrorModal,
   //MUIRemoveSongModal,
+  SongCatalogSongCard,
+  SongsScreen,
   SongCard,
   EditUserScreen,
   RegisterScreen,

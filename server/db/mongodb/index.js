@@ -5,6 +5,7 @@ const DatabaseManager = require("../DatabaseManager");
 
 const Playlist = require("../../models/playlist-model");
 const User = require("../../models/user-model");
+const Song = require("../../models/song-model");
 
 class MongoDatabaseManager extends DatabaseManager {
   async connect() {
@@ -112,6 +113,25 @@ class MongoDatabaseManager extends DatabaseManager {
     }
 
     return await Playlist.find(criteria).exec();
+  }
+
+  async getSongs(filters = {}) {
+    const { title, artist, year } = filters;
+    let criteria = {};
+
+    if (title) criteria.title = { $regex: title, $options: "i" };
+    if (artist) criteria.artist = { $regex: artist, $options: "i" };
+    if (year) {
+      if (!isNaN(year)) criteria.year = Number(year);
+      else criteria.year = { $regex: year, $options: "i" };
+    }
+
+    return await Song.find(criteria).exec();
+  }
+
+  async createCatalogSong(data) {
+    const song = new Song(data);
+    return await song.save();
   }
 }
 

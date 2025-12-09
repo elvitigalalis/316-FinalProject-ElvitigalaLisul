@@ -64,12 +64,20 @@ export const updatePlaylistById = (id, playlist) => {
   });
 };
 export const getUserByEmail = (email) => request(`/user/${email}`, "GET");
-export const getUserByPlaylistId = (id) => request(`/user/byplaylist/${id}`, "GET");
+export const getUserByPlaylistId = (id) =>
+  request(`/user/byplaylist/${id}`, "GET");
 export const filterPlaylists = (filters) => {
   console.log("sent filters:", filters);
   const query = new URLSearchParams(filters).toString();
   return request(`/playlists?${query}`, "GET");
 };
+export const getSongs = () => request(`/songs`, "GET");
+export const searchSongs = (filters) => {
+  const query = new URLSearchParams(filters).toString();
+  return request(`/songs?${query}`, "GET");
+};
+export const createCatalogSong = (songData) =>
+  request(`/songs`, "POST", songData);
 
 const apis = {
   createPlaylist,
@@ -80,6 +88,9 @@ const apis = {
   getUserByEmail,
   getUserByPlaylistId,
   filterPlaylists,
+  getSongs,
+  searchSongs,
+  createCatalogSong,
 };
 
 export default apis;
