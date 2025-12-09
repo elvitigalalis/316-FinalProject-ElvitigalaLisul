@@ -124,6 +124,8 @@ function GlobalStoreContextProvider(props) {
               : store.currentFilters,
           currentSort:
             payload.sort !== undefined ? payload.sort : store.currentSort,
+          listIdMarkedForDeletion: null,
+          listMarkedForDeletion: null,
         });
       }
       case GlobalStoreActionType.MARK_LIST_FOR_DELETION: {
@@ -191,6 +193,8 @@ function GlobalStoreContextProvider(props) {
           ...store,
           currentModal: CurrentModal.NONE,
           songMarkedForRemoval: null,
+          listIdMarkedForDeletion: null,
+          listMarkedForDeletion: null,
         });
       }
       case GlobalStoreActionType.LOAD_SONG_CATALOG: {
@@ -282,12 +286,38 @@ function GlobalStoreContextProvider(props) {
 
   // THIS FUNCTION CREATES A NEW LIST
   store.createNewList = async function () {
-    let newListName = "Untitled" + store.newListCounter;
+    let userPlaylists = [];
+    const getResponse = await storeRequestSender.getPlaylistPairs();
+    if (getResponse.data.success) {
+      userPlaylists = getResponse.data.idNamePairs;
+    }
+
+    let prefix = "Untitled";
+    let max = -1;
+
+    if (Array.isArray(userPlaylists)) {
+      userPlaylists.forEach((pair) => {
+        let name = pair.name;
+        if (name.startsWith(prefix)) {
+          let numPart = name.substring(prefix.length);
+          if (numPart.match(/^\d+$/)) {
+            let num = parseInt(numPart);
+            if (num > max) {
+              max = num;
+            }
+          }
+        }
+      });
+    }
+
+    let newListName = prefix + (max + 1);
+
     const response = await storeRequestSender.createPlaylist(
       newListName,
       [],
       auth.user.email
     );
+
     if (response.status === 201) {
       tps.clearAllTransactions();
       let newList = response.data.playlist;
@@ -296,8 +326,7 @@ function GlobalStoreContextProvider(props) {
         payload: newList,
       });
 
-      // IF IT'S A VALID LIST THEN LET'S START EDITING IT
-      history.push("/playlist/" + newList._id);
+      store.editPlaylist(newList._id || newList.id);
     }
   };
 
