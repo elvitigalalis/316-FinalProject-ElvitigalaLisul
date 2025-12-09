@@ -413,6 +413,42 @@ updateSong = async (req, res) => {
   }
 };
 
+deleteSong = async (req, res) => {
+  if (auth.verifyUser(req) === null) {
+    return res.status(400).json({ errorMessage: "UNAUTHORIZED" });
+  }
+
+  try {
+    // 1. find song
+    const song = await db.getConnection().model("Song").findById(req.params.id);
+    if (!song) {
+      return res.status(404).json({ message: "Song not found!" });
+    }
+
+    // 2. verify ownership
+    const user = await db.getUserById(req.userId);
+    if (song.ownerEmail !== user.email) {
+      return res
+        .status(400)
+        .json({ success: false, errorMessage: "authentication error" });
+    }
+
+    // 3. delete from catalog
+    await db.deleteCatalogSong(req.params.id);
+
+    // 4. cascade delete from all playlists
+    await db.removeSongFromPlaylists(song.youTubeId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Song removed!",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(404).json({ error, message: "Song not deleted!" });
+  }
+};
+
 module.exports = {
   createPlaylist,
   deletePlaylist,
@@ -425,4 +461,5 @@ module.exports = {
   getSongs,
   createSong,
   updateSong,
+  deleteSong,
 };

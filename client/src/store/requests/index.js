@@ -82,6 +82,8 @@ export const createCatalogSong = (songData) =>
 export const updateCatalogSong = (id, songData) =>
   request(`/songs/${id}`, "PUT", songData);
 
+export const deleteCatalogSong = (id) => request(`/songs/${id}`, "DELETE");
+
 const apis = {
   createPlaylist,
   deletePlaylistById,
@@ -95,6 +97,7 @@ const apis = {
   searchSongs,
   createCatalogSong,
   updateCatalogSong,
+  deleteCatalogSong,
 };
 
 export default apis;

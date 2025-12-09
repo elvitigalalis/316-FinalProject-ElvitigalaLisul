@@ -152,6 +152,21 @@ class MongoDatabaseManager extends DatabaseManager {
       }
     ).exec();
   }
+
+  // delete song from catalog collection
+  async deleteCatalogSong(id) {
+    const Song = require("../../models/song-model");
+    return await Song.findByIdAndDelete(id).exec();
+  }
+
+  // remove song instance from all playlists based on youtube id
+  async removeSongFromPlaylists(youTubeId) {
+    const Playlist = require("../../models/playlist-model");
+    return await Playlist.updateMany(
+      { "songs.youTubeId": youTubeId },
+      { $pull: { songs: { youTubeId: youTubeId } } }
+    ).exec();
+  }
 }
 
 module.exports = MongoDatabaseManager;
