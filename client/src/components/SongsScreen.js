@@ -109,7 +109,8 @@ const SongsScreen = () => {
     store.showCreateSongModal();
   };
 
-  // sorting logic
+  const isGuest = auth.user && auth.user.email === "GUEST@GUEST.com";
+
   let sortedSongs = [];
   if (store.songCatalog) {
     sortedSongs = [...store.songCatalog];
