@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { GlobalStoreContext } from "../store";
 import AuthContext from "../auth";
 import SongCatalogSongCard from "./SongCatalogSongCard";
@@ -32,12 +32,48 @@ const SongsScreen = () => {
   const isMenuOpen = Boolean(anchorEl);
   const [sortLabel, setSortLabel] = useState("Listens (Hi-Lo)");
   const [searchActive, setSearchActive] = useState(false);
+  const [player, setPlayer] = useState(null);
 
   // initial load
   useEffect(() => {
     store.loadSongCatalog();
     store.loadUserPlaylists();
+
+    if (!window.YT) {
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName("script")[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    }
+
+    window.onYouTubeIframeAPIReady = () => {
+      loadPlayer();
+    };
+
+    if (window.YT && window.YT.Player) {
+      loadPlayer();
+    }
   }, []);
+
+  function loadPlayer() {
+    if (player) return;
+    const newPlayer = new window.YT.Player("youtube-player-catalog", {
+      height: "100%",
+      width: "100%",
+      videoId: "dQw4w9WgXcQ",
+      playerVars: {
+        playsinline: 1,
+        origin: window.location.origin,
+      },
+    });
+    setPlayer(newPlayer);
+  }
+
+  function handlePlaySong(youTubeId) {
+    if (player && player.loadVideoById) {
+      player.loadVideoById(youTubeId);
+    }
+  }
 
   const handleFilterChange = (prop) => (event) => {
     setFilters({ ...filters, [prop]: event.target.value });
@@ -270,7 +306,11 @@ const SongsScreen = () => {
           <Box sx={{ flexGrow: 1, overflowY: "auto", p: 2 }}>
             <List>
               {sortedSongs.map((song) => (
-                <SongCatalogSongCard key={song._id} song={song} />
+                <SongCatalogSongCard
+                  key={song._id}
+                  song={song}
+                  handlePlaySong={handlePlaySong}
+                />
               ))}
             </List>
           </Box>

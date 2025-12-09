@@ -9,7 +9,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-function SongCatalogSongCard({ song }) {
+function SongCatalogSongCard({ song, handlePlaySong: loadVideo }) {
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -30,6 +30,7 @@ function SongCatalogSongCard({ song }) {
   const handlePlaySong = () => {
     console.log("Play song in sidebar:", song.title);
     store.incrementListen(song._id);
+    if (loadVideo) loadVideo(song.youTubeId);
   };
 
   const handleEditSong = () => {
