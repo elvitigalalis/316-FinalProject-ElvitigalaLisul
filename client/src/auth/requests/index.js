@@ -86,8 +86,9 @@ export const editUser = (
   });
 };
 
-export const updateSongStats = (id, action) =>
-  request(`/songs/${id}/stats`, "PUT", { action });
+export const loginGuest = () => {
+  return request("/loginGuest", "POST");
+};
 
 const apis = {
   getLoggedIn,
@@ -95,7 +96,7 @@ const apis = {
   loginUser,
   logoutUser,
   editUser,
-  updateSongStats
+  loginGuest,
 };
 
 export default apis;

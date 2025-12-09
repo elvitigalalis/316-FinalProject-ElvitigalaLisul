@@ -19,7 +19,7 @@ getLoggedIn = async (req, res) => {
     return res.status(200).json({
       loggedIn: true,
       user: {
-        id : loggedInUser._id || loggedInUser.id,
+        id: loggedInUser._id || loggedInUser.id,
         username: loggedInUser.username,
         email: loggedInUser.email,
         profilePicture: loggedInUser.profilePicture,
@@ -142,6 +142,11 @@ editUser = async (req, res) => {
     }
 
     const user = await db.getUserById(userId);
+    if (user.email === "GUEST@GUEST.com") {
+      return res.status(400).json({
+        errorMessage: "Guest users cannot edit their profile.",
+      });
+    }
     user.username = username;
     user.email = email;
     user.profilePicture = profilePicture;
@@ -252,10 +257,42 @@ registerUser = async (req, res) => {
   }
 };
 
+loginGuest = async (req, res) => {
+  try {
+    const existingUser = await db.getUserByEmail("GUEST@GUEST.com");
+    if (!existingUser) {
+      return res
+        .status(401)
+        .json({ errorMessage: "Guest account not configured." });
+    }
+    const token = auth.signToken(existingUser._id || existingUser.id);
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+      })
+      .status(200)
+      .json({
+        success: true,
+        user: {
+          id: existingUser._id || existingUser.id,
+          username: existingUser.username,
+          email: existingUser.email,
+          profilePicture: existingUser.profilePicture,
+        },
+      });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send();
+  }
+};
+
 module.exports = {
   getLoggedIn,
   registerUser,
   loginUser,
   logoutUser,
   editUser,
+  loginGuest,
 };

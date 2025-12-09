@@ -30,6 +30,11 @@ createPlaylist = async (req, res) => {
         errorMessage: "User not found",
       });
     }
+    if (user.email === "GUEST@GUEST.com") {
+      return res.status(400).json({
+        errorMessage: "Guest users cannot create playlists.",
+      });
+    }
     const playlist = await db.createPlaylist({
       name: body.name,
       ownerEmail: user.email,
@@ -237,6 +242,12 @@ createSong = async (req, res) => {
     const user = await db.getUserById(req.userId);
     if (!user) return res.status(400).json({ errorMessage: "User not found" });
 
+    if (user.email === "GUEST@GUEST.com") {
+      return res.status(400).json({
+        errorMessage: "Guest users cannot add songs.",
+      });
+    }
+    
     const song = await db.createCatalogSong({
       title: body.title,
       artist: body.artist,
