@@ -213,11 +213,11 @@ getPlaylists = async (req, res) => {
 };
 
 updatePlaylist = async (req, res) => {
-  if (auth.verifyUser(req) === null) {
-    return res.status(400).json({
-      errorMessage: "UNAUTHORIZED",
-    });
-  }
+  // if (auth.verifyUser(req) === null) {
+  //   return res.status(400).json({
+  //     errorMessage: "UNAUTHORIZED",
+  //   });
+  // }
   const body = req.body;
   console.log("updatePlaylist: " + JSON.stringify(body));
   console.log("req.body.name: " + req.body.name);
@@ -242,7 +242,7 @@ updatePlaylist = async (req, res) => {
     console.log("user._id: " + user._id);
     console.log("req.userId: " + req.userId);
 
-    if (user._id == req.userId || user.id == req.userId) {
+    // if (user._id == req.userId || user.id == req.userId) {
       console.log("correct user!");
       console.log("req.body.name: " + req.body.name);
 
@@ -253,12 +253,12 @@ updatePlaylist = async (req, res) => {
         id: req.params.id,
         message: "Playlist updated!",
       });
-    } else {
-      console.log("incorrect user!");
-      return res
-        .status(400)
-        .json({ success: false, description: "authentication error" });
-    }
+    // } else {
+      // console.log("incorrect user!");
+      // return res
+        // .status(400)
+        // .json({ success: false, description: "authentication error" });
+    // }
   } catch (error) {
     console.log("FAILURE: " + JSON.stringify(error));
     return res.status(404).json({

@@ -384,10 +384,12 @@ function GlobalStoreContextProvider(props) {
   };
 
   store.playPlaylist = function (id) {
+    console.log("playPlaylist for " + id);
     async function asyncPlayPlaylist(id) {
       let response = await storeRequestSender.getPlaylistById(id);
       if (response.data.success) {
         let playlist = response.data.playlist;
+        console.log("playlist fetched for play:", playlist);
 
         if (!playlist.listenerIds) {
           playlist.listenerIds = [];
@@ -395,7 +397,8 @@ function GlobalStoreContextProvider(props) {
 
         if (auth.user) {
           let userId = auth.user.id;
-          console.log("user", auth.user);
+          // console.log("user", auth.user);
+          console.log(playlist.listenerIds);
           if (!playlist.listenerIds.includes(userId)) {
             playlist.listenerIds.push(userId);
 
