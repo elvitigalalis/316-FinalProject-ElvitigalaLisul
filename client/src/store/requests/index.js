@@ -79,6 +79,9 @@ export const searchSongs = (filters) => {
 export const createCatalogSong = (songData) =>
   request(`/songs`, "POST", songData);
 
+export const updateCatalogSong = (id, songData) =>
+  request(`/songs/${id}`, "PUT", songData);
+
 const apis = {
   createPlaylist,
   deletePlaylistById,
@@ -91,6 +94,7 @@ const apis = {
   getSongs,
   searchSongs,
   createCatalogSong,
+  updateCatalogSong,
 };
 
 export default apis;

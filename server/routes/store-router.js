@@ -23,5 +23,6 @@ router.get(
 );
 router.get("/songs", StoreController.getSongs);
 router.post("/songs", auth.verify, StoreController.createSong);
+router.put("/songs/:id", auth.verify, StoreController.updateSong);
 
 module.exports = router;

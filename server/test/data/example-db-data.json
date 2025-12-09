@@ -2,7 +2,7 @@
     "users": [
         {
             "username": "Joe",
-            "email": "joe@shmo.com",
+            "email": "test@3.com",
             "passwordHash": "$2a$10$dPEwsAVi1ojv2RfxxTpZjuKSAbep7zEKb5myegm.ATbQ4sJk4agGu",
             "playlists": [
                 "68f524b611e0f3901871f164",
@@ -11,7 +11,7 @@
         },
         {
             "username": "Jane",
-            "email": "jane@doe.com",
+            "email": "test@2.com",
             "passwordHash": "$2a$10$dPEwsAVi1ojv2RfxxTpZjuKSAbep7zEKb5myegm.ATbQ4sJk4agGu",
             "playlists": [
                 "68f526c4ec1ea2ad00a6fae8"
@@ -19,7 +19,7 @@
         },
         {
             "username": "Lisul",
-            "email": "elvitigalalis@gmail.com",
+            "email": "test@1.com",
             "passwordHash": "$2a$10$dPEwsAVi1ojv2RfxxTpZjuKSAbep7zEKb5myegm.ATbQ4sJk4agGu",
             "playlists": [
                 "690a8d2facdddd48309f4e3d",
@@ -31,7 +31,7 @@
     "playlists": [
       {
         "_id": "68f524b611e0f3901871f164",
-        "ownerEmail": "joe@shmo.com",
+        "ownerEmail": "test@3.com",
         "name": "Spacey",
         "songs": [
           {
@@ -128,7 +128,7 @@
       },
       {
         "_id": "68f526c1ec1ea2ad00a6fae0",
-        "ownerEmail": "joe@shmo.com",
+        "ownerEmail": "test@3.com",
         "name": "Any Colour You Like",
         "songs": [
           {
@@ -201,7 +201,7 @@
       },
       {
         "_id": "68f526c4ec1ea2ad00a6fae8",
-        "ownerEmail": "jane@doe.com",
+        "ownerEmail": "test@2.com",
         "name": "Don't be Rude",
         "songs": [
           {
@@ -220,7 +220,7 @@
       },
       {
         "_id": "690a8d2facdddd48309f4e3d",
-        "ownerEmail": "elvitigalalis@gmail.com",
+        "ownerEmail": "test@1.com",
         "name": "Old Songs I Like",
         "songs": [
           {
@@ -347,7 +347,7 @@
       },
       {
         "_id": "690a8d420d439296a80575be",
-        "ownerEmail": "elvitigalalis@gmail.com",
+        "ownerEmail": "test@1.com",
         "name": "My Favorite Songs",
         "songs": [
           {
@@ -474,7 +474,7 @@
       },
       {
         "_id": "690a8d57e38f2c82a41bf185",
-        "ownerEmail": "elvitigalalis@gmail.com",
+        "ownerEmail": "test@1.com",
         "name": "Songs I Find Interesting or Unusual",
         "songs": [
           {

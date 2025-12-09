@@ -133,6 +133,25 @@ class MongoDatabaseManager extends DatabaseManager {
     const song = new Song(data);
     return await song.save();
   }
+
+  async updateCatalogSong(id, data) {
+    return await Song.findByIdAndUpdate(id, data, { new: true }).exec();
+  }
+
+  async updateSongInPlaylists(originalYouTubeId, newData) {
+    const Playlist = require("../../models/playlist-model");
+    return await Playlist.updateMany(
+      { "songs.youTubeId": originalYouTubeId },
+      {
+        $set: {
+          "songs.$.title": newData.title,
+          "songs.$.artist": newData.artist,
+          "songs.$.year": newData.year,
+          "songs.$.youTubeId": newData.youTubeId,
+        },
+      }
+    ).exec();
+  }
 }
 
 module.exports = MongoDatabaseManager;

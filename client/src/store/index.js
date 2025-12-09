@@ -434,6 +434,18 @@ function GlobalStoreContextProvider(props) {
     }
   };
 
+  store.updateCatalogSong = async function (id, songData, oldYouTubeId) {
+    let payload = {
+      ...songData,
+      originalYouTubeId: oldYouTubeId,
+    };
+    const response = await storeRequestSender.updateCatalogSong(id, payload);
+    if (response.status === 200) {
+      store.loadSongCatalog();
+      store.hideModals();
+    }
+  };
+
   store.playPlaylist = function (id) {
     console.log("playPlaylist for " + id);
     async function asyncPlayPlaylist(id) {

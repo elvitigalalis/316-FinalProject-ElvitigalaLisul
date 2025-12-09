@@ -1,5 +1,6 @@
 const db = require("../db");
 const auth = require("../auth");
+const { updateCatalogSong } = require("../../client/src/store/requests");
 /*
     This is our back-end API. It provides all the data services
     our database needs. Note that this file contains the controller
@@ -365,6 +366,53 @@ getUserByPlaylistId = async (req, res) => {
   }
 };
 
+updateSong = async (req, res) => {
+  if (auth.verifyUser(req) === null) {
+    return res.status(400).json({ errorMessage: "UNAUTHORIZED" });
+  }
+  const body = req.body;
+  if (!body) {
+    return res
+      .status(400)
+      .json({ success: false, error: "You must provide a body to update" });
+  }
+
+  try {
+    const song = await db.getConnection().model("Song").findById(req.params.id);
+    if (!song) return res.status(404).json({ message: "Song not found!" });
+
+    const user = await db.getUserById(req.userId);
+    if (song.ownerEmail !== user.email) {
+      return res
+        .status(400)
+        .json({ success: false, errorMessage: "authentication error" });
+    }
+
+    const updatedSong = await db.updateCatalogSong(req.params.id, {
+      title: body.title,
+      artist: body.artist,
+      year: body.year,
+      youTubeId: body.youTubeId,
+    });
+
+    await db.updateSongInPlaylists(body.originalYouTubeId, {
+      title: body.title,
+      artist: body.artist,
+      year: body.year,
+      youTubeId: body.youTubeId,
+    });
+
+    return res.status(200).json({
+      success: true,
+      song: updatedSong,
+      message: "Song updated!",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(404).json({ error, message: "Song not updated!" });
+  }
+};
+
 module.exports = {
   createPlaylist,
   deletePlaylist,
@@ -376,4 +424,5 @@ module.exports = {
   getUserByPlaylistId,
   getSongs,
   createSong,
+  updateSong,
 };
