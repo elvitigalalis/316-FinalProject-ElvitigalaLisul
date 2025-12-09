@@ -158,6 +158,7 @@ const SongsScreen = () => {
         break;
     }
   }
+  const isGuest = auth.user && auth.user.email === "GUEST@GUEST.com";
 
   const sortMenu = (
     <Menu anchorEl={anchorEl} open={isMenuOpen} onClose={handleSortClose}>
@@ -315,15 +316,17 @@ const SongsScreen = () => {
             </List>
           </Box>
 
-          {/* creation action */}
-          <Fab
-            color="primary"
-            aria-label="add"
-            onClick={handleCreateNewSong}
-            sx={{ position: "absolute", bottom: 20, left: 20 }}
-          >
-            <AddIcon />
-          </Fab>
+          {/* creation action - HIDDEN FOR GUESTS */}
+          {!isGuest && (
+            <Fab
+              color="primary"
+              aria-label="add"
+              onClick={handleCreateNewSong}
+              sx={{ position: "absolute", bottom: 20, left: 20 }}
+            >
+              <AddIcon />
+            </Fab>
+          )}
         </Grid>
       </Grid>
 
